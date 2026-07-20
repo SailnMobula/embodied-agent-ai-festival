@@ -31,7 +31,7 @@ Strange are self-hosted from `src/fonts/`.
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321/ki-festival-workshop/
+npm run dev      # http://localhost:4321/embodied-agent-ai-festival/
 npm run build    # static output in dist/
 npm run preview  # serve the built output
 ```
