@@ -1,0 +1,35 @@
+---
+order: 4
+title: Skills
+tagline: The robot's individual abilities, each one demonstrated on its own before the agent gets to use them.
+durationMinutes: 10
+takeaway: A skill is a plain function with a name and parameters. The agent does not know how it works — only when to call it.
+---
+
+## One ability at a time
+
+Before wiring anything together, each skill gets shown by itself. It is the only way to build an
+honest sense of what the robot can and cannot do — once the agent is running, success and failure
+blur together.
+
+A skill has three parts, and that is all:
+
+1. A **name** the model can read and understand.
+2. **Parameters** — what has to be decided each time it is called.
+3. A **description** in plain language, because the model picks the skill by reading this text.
+
+That description is not documentation for humans. It is the interface the model actually uses.
+
+## The skill catalogue
+
+> Open point: choose the three or four skills to demonstrate live. Each one becomes a card here
+> with its plain-language description and its function-calling schema.
+
+<strong>Function calling</strong> is the mechanism behind this: the model does not move anything
+itself, it emits a small message saying "call `wave` with these values", and our software runs it.
+
+## Why this framing matters
+
+Every skill on this page is written by hand, tested by hand, and safe by construction. What the
+agent adds in Station 5 is not new abilities — it is deciding *which* ability, *when*, and with
+*what* parameters, without anyone having written that decision down beforehand.

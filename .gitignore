@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.astro/
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+Thumbs.db
+
+*.log
+npm-debug.log*
+
+.vscode/*
+!.vscode/extensions.json
+.idea/

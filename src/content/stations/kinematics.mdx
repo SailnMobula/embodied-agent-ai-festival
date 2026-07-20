@@ -1,0 +1,37 @@
+---
+order: 2
+title: Kinematics
+tagline: Joint angles go in, a position in space comes out.
+durationMinutes: 5
+takeaway: The robot never thinks in "up" or "left". It thinks in angles, and geometry turns them into a position.
+---
+
+import ForwardKinematicsDemo from '@/components/ForwardKinematicsDemo.tsx'
+
+## The robot does not know where its hand is
+
+A robot arm has no sense of touch and no eye watching itself. All it knows is how far each motor
+has turned. Turning that set of angles into "the hand is *here*" is called **forward kinematics**,
+and it is pure geometry — no AI involved.
+
+The tip of the arm has a name: the <strong>end effector</strong> — the business end, the hand or
+gripper that actually touches the world.
+
+## Try it
+
+Move the sliders. Each one turns one joint. Watch the position readout change.
+
+<ForwardKinematicsDemo client:visible />
+
+Two things worth noticing:
+
+- Every joint moves everything downstream of it. The shoulder drags the elbow, the wrist and the
+  hand along with it.
+- A small change at the shoulder moves the hand much further than the same change at the wrist.
+  This is why the joints closest to the body need the most precise motors.
+
+## The harder direction
+
+Going the other way — "put the hand *there*, figure out the angles yourself" — is **inverse
+kinematics**, and it is genuinely difficult: there are often many valid answers, and sometimes
+none. The X2 solves this constantly while walking. We are not opening that box today.

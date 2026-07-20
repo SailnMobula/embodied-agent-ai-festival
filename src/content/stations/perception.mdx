@@ -1,0 +1,44 @@
+---
+order: 3
+title: Cameras and perception
+tagline: What the robot actually sees, and how raw pixels become "there is a person".
+durationMinutes: 10
+takeaway: Perception is not one sensor. It is several, each blind in a different way, combined into one picture.
+---
+
+## What the X2 Ultra has on board
+
+- **RGB cameras** — ordinary colour images. Rich in detail, but flat: they carry no distance.
+- **Depth cameras** — every pixel additionally carries "how far away". This is what makes stepping
+  over an obstacle possible instead of walking into it.
+- **Point clouds** — the depth image turned into a cloud of measured points in 3D space. Not a
+  smooth model of the room, just a few hundred thousand dots the sensor was able to hit.
+
+A <strong>point cloud</strong> is the room as a scatter of measured dots — no surfaces, no
+objects, just positions the sensor could reach.
+
+> Open point: pick a screenshot of a real point cloud from the X2 to show here.
+
+## From pixels to meaning
+
+A camera image on its own means nothing to the robot. A perception model turns it into labels and
+positions — a box drawn around each thing it recognises, with a name attached.
+
+> Open point: decide which one or two perception models to walk through, and whether the live
+> detection runs embedded on this page or in a separate window.
+
+## Live: person detection
+
+This is the skill Station 5 depends on. The agent cannot decide "wave at that person" unless
+something underneath it is continuously answering the question "is there a person, and where".
+
+> Placeholder: live camera feed with bounding boxes.
+
+## Where it breaks
+
+Worth saying out loud during the demo, because it is the honest part:
+
+- Backlight and glass surfaces wreck depth measurements.
+- A model only recognises what it was trained on. Everything else is invisible to it, not
+  "unknown".
+- Detections flicker between frames. Anything built on top has to tolerate that.

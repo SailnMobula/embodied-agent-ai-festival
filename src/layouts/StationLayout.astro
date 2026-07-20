@@ -1,0 +1,121 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import StationPager from '@/components/StationPager.astro'
+import type { Station, StationNeighbours } from '@/lib/stations'
+
+type Props = {
+  station: Station
+  neighbours: StationNeighbours
+}
+
+const { station, neighbours } = Astro.props
+const { order, title, tagline, durationMinutes, takeaway } = station.data
+---
+
+<BaseLayout title={`${order}. ${title} — Embodied Agents Workshop`} description={tagline}>
+  <article class="mx-auto max-w-4xl px-6 py-16">
+    <header class="mb-14">
+      <p class="text-sm font-semibold tracking-[0.2em] text-accent uppercase">
+        Station {order} · {durationMinutes} min
+      </p>
+      <h1 class="mt-3 text-station leading-[1.05] font-bold text-balance">{title}</h1>
+      <p class="mt-5 text-lead text-ink-muted text-pretty">{tagline}</p>
+    </header>
+
+    <div class="station-content">
+      <slot />
+    </div>
+
+    <aside class="mt-16 rounded-2xl border-l-4 border-accent bg-surface p-7">
+      <p class="text-xs font-semibold tracking-[0.2em] text-accent uppercase">Takeaway</p>
+      <p class="mt-2 text-lead font-medium text-pretty">{takeaway}</p>
+    </aside>
+
+    <StationPager previous={neighbours.previous} next={neighbours.next} />
+  </article>
+</BaseLayout>
+
+<style is:global>
+  .station-content > * + * {
+    margin-block-start: 1.35em;
+  }
+  .station-content h2 {
+    margin-block-start: 2.2em;
+    font-size: 1.9em;
+    font-weight: 700;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  .station-content h3 {
+    margin-block-start: 1.8em;
+    font-size: 1.3em;
+    font-weight: 600;
+  }
+  .station-content ul,
+  .station-content ol {
+    padding-inline-start: 1.4em;
+  }
+  .station-content ul {
+    list-style: disc;
+  }
+  .station-content ol {
+    list-style: decimal;
+  }
+  .station-content li + li {
+    margin-block-start: 0.5em;
+  }
+  .station-content strong {
+    color: var(--color-accent);
+    font-weight: 650;
+  }
+  .station-content a {
+    color: var(--color-accent);
+    text-underline-offset: 4px;
+    text-decoration-line: underline;
+  }
+  .station-content code {
+    background-color: var(--color-surface);
+    border-radius: 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    padding: 0.15em 0.4em;
+  }
+  .station-content pre {
+    background-color: var(--color-surface) !important;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 0.9rem;
+    font-size: 0.85em;
+    overflow-x: auto;
+    padding: 1.25rem 1.4rem;
+  }
+  .station-content pre code {
+    background: none;
+    padding: 0;
+  }
+  .station-content blockquote {
+    border-inline-start: 4px solid var(--color-border-subtle);
+    color: var(--color-ink-muted);
+    font-style: italic;
+    padding-inline-start: 1.2em;
+  }
+  .station-content table {
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+  .station-content th,
+  .station-content td {
+    border-block-end: 1px solid var(--color-border-subtle);
+    padding: 0.7em 1em;
+    text-align: start;
+    vertical-align: top;
+  }
+  .station-content th {
+    color: var(--color-accent);
+    font-size: 0.8em;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>

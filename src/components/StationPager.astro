@@ -1,0 +1,52 @@
+---
+import type { Station } from '@/lib/stations'
+import { overviewRoute, stationRoute } from '@/lib/routes'
+
+type Props = {
+  previous: Station | undefined
+  next: Station | undefined
+}
+
+const { previous, next } = Astro.props
+---
+
+<nav
+  aria-label="Station navigation"
+  class="mt-20 grid gap-4 border-t border-border-subtle pt-8 sm:grid-cols-3 sm:items-center"
+>
+  {
+    previous ? (
+      <a href={stationRoute(previous.id)} class="group text-ink-muted hover:text-accent">
+        <span class="block text-xs tracking-widest uppercase">Previous</span>
+        <span class="text-lead font-semibold text-ink group-hover:text-accent">
+          ← {previous.data.title}
+        </span>
+      </a>
+    ) : (
+      <span />
+    )
+  }
+
+  <a
+    href={overviewRoute()}
+    class="text-center text-sm tracking-widest text-ink-muted uppercase hover:text-accent"
+  >
+    Overview
+  </a>
+
+  {
+    next ? (
+      <a
+        href={stationRoute(next.id)}
+        class="group text-right text-ink-muted hover:text-accent sm:justify-self-end"
+      >
+        <span class="block text-xs tracking-widest uppercase">Next</span>
+        <span class="text-lead font-semibold text-ink group-hover:text-accent">
+          {next.data.title} →
+        </span>
+      </a>
+    ) : (
+      <span />
+    )
+  }
+</nav>

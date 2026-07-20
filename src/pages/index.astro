@@ -1,0 +1,51 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { loadStationsInOrder, startMinuteOf, totalMinutes } from '@/lib/stations'
+import { stationRoute } from '@/lib/routes'
+
+const stations = await loadStationsInOrder()
+const duration = totalMinutes(stations)
+---
+
+<BaseLayout
+  title="From Humanoid Robot to Embodied Agent — Workshop"
+  description="A five-station workshop on how an AI agent controls a real humanoid robot, with live demos on the AgiBot X2 Ultra."
+>
+  <div class="mx-auto max-w-5xl px-6 py-20">
+    <p class="text-sm font-semibold tracking-[0.2em] text-accent uppercase">
+      KI Festival · {duration} minutes
+    </p>
+    <h1 class="mt-4 text-hero leading-[1.02] font-bold text-balance">
+      From Humanoid Robot to Embodied Agent
+    </h1>
+    <p class="mt-6 max-w-3xl text-lead text-ink-muted text-pretty">
+      Today robots are programmed as state machines: every reaction written down in advance. This
+      workshop shows what changes when an AI agent takes the wheel instead — live, on a real AgiBot
+      X2 Ultra.
+    </p>
+
+    <ol class="mt-16 flex flex-col gap-4">
+      {
+        stations.map((station, index) => (
+          <li>
+            <a
+              href={stationRoute(station.id)}
+              class="group grid gap-4 rounded-2xl border border-border-subtle bg-surface p-7 hover:border-accent sm:grid-cols-[7rem_1fr]"
+            >
+              <div class="font-mono text-sm text-ink-muted tabular-nums">
+                <span class="block text-accent">
+                  +{startMinuteOf(stations, index)}–{startMinuteOf(stations, index + 1)} min
+                </span>
+                <span class="block">Station {station.data.order}</span>
+              </div>
+              <div>
+                <h2 class="text-lead font-semibold group-hover:text-accent">{station.data.title}</h2>
+                <p class="mt-1 text-ink-muted text-pretty">{station.data.tagline}</p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</BaseLayout>

@@ -1,0 +1,57 @@
+---
+order: 5
+title: The agent
+tagline: Prompt, skills and a real-time model, assembled live — and the same task we saw as a state machine in Station 1.
+durationMinutes: 20
+takeaway: The same task, without a single branch written in advance. That is the whole difference.
+---
+
+import StateMachineDemo from '@/components/StateMachineDemo.tsx'
+
+## What we plug together
+
+Three pieces, assembled live on stage:
+
+1. **The context prompt** — who the robot is, what it is supposed to care about, what it must
+   never do.
+2. **The skills from Station 4** — handed to the model as function definitions.
+3. **The realtime API** — the model, listening and answering continuously instead of once per
+   question.
+
+## The loop
+
+The agent does not run a program. It runs a conversation that happens to have a robot attached.
+
+1. Perception describes the situation in words: *a person is visible, three metres ahead*.
+2. The model reads the situation together with the prompt and decides what to do.
+3. It calls a skill — `wave`, `walk_to`, `look_at`.
+4. The robot executes it, and what happened goes back into the conversation as the next input.
+5. Back to step 1.
+
+Nowhere in this loop is there a list of situations. Step 2 is the entire difference.
+
+## The example order
+
+> "Walk around until you see someone. When you recognise a person, wave at them."
+
+That is the complete specification. No states, no transitions, no edge cases.
+
+## The same task, the old way
+
+Here is Station 1's state machine again — the identical task, written out by hand:
+
+<StateMachineDemo client:visible />
+
+Both do the job. But now ask the agent to also greet people by name, or to ignore anyone already
+walking away, or to wave with the other arm when it is holding something. On the left, that is a
+sentence. On the right, it is a redesign.
+
+## What still does not work
+
+The honest half, and the reason this is a workshop and not a sales pitch:
+
+- The model is slow compared to a control loop. Reflexes stay hard-coded — balance is not up for
+  discussion.
+- It will confidently call a skill in a situation the skill was never built for.
+- It cannot do anything a skill does not already expose. There is no improvising new abilities.
+- Reproducibility is limited. The same situation twice does not guarantee the same decision.

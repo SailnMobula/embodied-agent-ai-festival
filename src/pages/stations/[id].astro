@@ -1,0 +1,20 @@
+---
+import { render } from 'astro:content'
+import StationLayout from '@/layouts/StationLayout.astro'
+import { findNeighbours, loadStationsInOrder } from '@/lib/stations'
+
+export async function getStaticPaths() {
+  const stations = await loadStationsInOrder()
+  return stations.map((station) => ({
+    params: { id: station.id },
+    props: { station, neighbours: findNeighbours(stations, station.id) },
+  }))
+}
+
+const { station, neighbours } = Astro.props
+const { Content } = await render(station)
+---
+
+<StationLayout station={station} neighbours={neighbours}>
+  <Content />
+</StationLayout>
