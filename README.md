@@ -61,12 +61,7 @@ The site is served from a subpath, so `base` in `astro.config.mjs` must match th
 
 ## License
 
-Dual-licensed, because the repository holds two different kinds of work:
+[CC BY-SA 4.0](LICENSE) — content and code alike.
 
-- **Workshop content** (everything under `src/content/`, `docs/`, and this README) —
-  [CC BY-SA 4.0](LICENSE). Reuse it, remix it, teach it. Anything you build on it stays under the
-  same license.
-- **Code** (everything else) — [AGPL-3.0](LICENSE-CODE). If you host a modified version, the
-  modified source has to be available to its users.
-
-Both are strong copyleft: derivatives stay open.
+Reuse it, remix it, teach it. Credit the source, and anything you build on it stays under the same
+license.
