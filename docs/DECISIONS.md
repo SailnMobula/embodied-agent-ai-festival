@@ -44,8 +44,22 @@ clause, a modified hosted copy carries no obligation to share anything back.
 Rejected: GNU FDL for the content — invariant sections and transparent-copy requirements are a
 poor fit for a web page.
 
-## 5. Dark theme, fluid type
+## 5. Exxeta design system, dark-only, fluid type
 
-The primary display is a beamer in a lit room; the secondary is a laptop after the fact. Type
-scales with `clamp()` against the viewport, so the same page is legible in both without a
-presentation mode. Colours are defined as `@theme` tokens in `src/styles/global.css`.
+Tokens, fonts and the `frontend-design` skill are ported from `imify-cloud` so the workshop site
+and the product share one visual language. `src/styles/global.css` is the port target;
+`.claude/skills/frontend-design/` is the reference.
+
+Dark-only rather than themed: the primary display is a beamer in a lit room, and the Exxeta dark
+role values (black background, grey-800 cards, turquoise accent) are already the strongest contrast
+pairing in the system. A theme toggle would be a switch nobody touches mid-talk.
+
+Type scales with `clamp()` against the viewport, so the same page is legible on the beamer and on a
+laptop afterwards without a presentation mode.
+
+## 6. Fonts self-hosted from `src/fonts/`
+
+Sen and Bandeins Strange are committed as woff2 and imported with relative URLs, so Vite hashes
+them and rewrites the paths against `base`. Two reasons over the Google Fonts CDN: the venue
+network is not something to bet a live talk on, and hardcoding the repository name into a font URL
+breaks the moment the repository is renamed.

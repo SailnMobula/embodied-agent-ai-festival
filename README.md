@@ -23,6 +23,10 @@ English.
 [Tailwind CSS](https://tailwindcss.com). Content pages ship zero JavaScript; only the two demos
 hydrate in the browser. See [docs/DECISIONS.md](docs/DECISIONS.md) for why.
 
+Styling follows the Exxeta design system — tokens in `src/styles/global.css`, brand rules in
+[`.claude/skills/frontend-design/`](.claude/skills/frontend-design/SKILL.md). Sen and Bandeins
+Strange are self-hosted from `src/fonts/`.
+
 ## Local development
 
 ```bash

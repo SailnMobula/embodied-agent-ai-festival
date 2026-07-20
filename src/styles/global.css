@@ -1,21 +1,73 @@
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Sen';
+  src: url('../fonts/Sen-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Sen';
+  src: url('../fonts/Sen-latin-ext.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308,
+    U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Bandeins Strange';
+  src:
+    url('../fonts/BandeinsStrange-Bold.woff2') format('woff2'),
+    url('../fonts/BandeinsStrange-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --color-canvas: oklch(0.16 0.02 265);
-  --color-surface: oklch(0.22 0.025 265);
-  --color-border-subtle: oklch(0.34 0.03 265);
-  --color-ink: oklch(0.97 0.005 265);
-  --color-ink-muted: oklch(0.76 0.02 265);
-  --color-accent: oklch(0.78 0.17 85);
-  --color-accent-ink: oklch(0.18 0.04 85);
+  --color-ex-black: #000000;
+  --color-ex-white: #ffffff;
+  --color-ex-grey-100: #e6e6e6;
+  --color-ex-grey-200: #cccccc;
+  --color-ex-grey-400: #999999;
+  --color-ex-grey-600: #666666;
+  --color-ex-grey-800: #333333;
+  --color-ex-turquoise-100: #b5f1ff;
+  --color-ex-turquoise-500: #46dcff;
+  --color-ex-blue-500: #8ca5ff;
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', monospace;
+  --color-background: var(--color-ex-black);
+  --color-foreground: var(--color-ex-white);
+  --color-card: var(--color-ex-grey-800);
+  --color-card-foreground: var(--color-ex-white);
+  --color-secondary: var(--color-ex-grey-800);
+  --color-muted-foreground: var(--color-ex-grey-400);
+  --color-body: var(--color-ex-grey-100);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.15);
+  --color-accent: var(--color-ex-turquoise-500);
+  --color-accent-foreground: var(--color-ex-black);
+  --color-info: var(--color-ex-blue-500);
 
-  --text-hero: clamp(2.75rem, 6vw, 5rem);
-  --text-station: clamp(2rem, 4.5vw, 3.5rem);
+  --font-sans: 'Sen', system-ui, -apple-system, sans-serif;
+  --font-display: 'Bandeins Strange', 'Sen', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+
+  --text-hero: clamp(2.5rem, 5.5vw, 4.5rem);
+  --text-station: clamp(2rem, 4vw, 3.25rem);
   --text-lead: clamp(1.25rem, 1.9vw, 1.75rem);
-  --text-body: clamp(1.0625rem, 1.4vw, 1.375rem);
+  --text-body: clamp(1.0625rem, 1.35vw, 1.375rem);
+
+  --radius-container: 8px;
+  --radius-card: 16px;
+  --radius-pill: 24px;
 }
 
 html {
@@ -24,16 +76,22 @@ html {
 }
 
 body {
-  background-color: var(--color-canvas);
-  color: var(--color-ink);
+  background-color: var(--color-background);
+  color: var(--color-body);
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  line-height: 1.65;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
 :focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 

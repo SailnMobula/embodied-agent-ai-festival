@@ -15,20 +15,22 @@ const { order, title, tagline, durationMinutes, takeaway } = station.data
 <BaseLayout title={`${order}. ${title} — Embodied Agents Workshop`} description={tagline}>
   <article class="mx-auto max-w-4xl px-6 py-16">
     <header class="mb-14">
-      <p class="text-sm font-semibold tracking-[0.2em] text-accent uppercase">
+      <p class="text-sm font-bold text-muted-foreground">
         Station {order} · {durationMinutes} min
       </p>
-      <h1 class="mt-3 text-station leading-[1.05] font-bold text-balance">{title}</h1>
-      <p class="mt-5 text-lead text-ink-muted text-pretty">{tagline}</p>
+      <h1 class="font-display mt-3 text-station leading-[1.05] text-foreground text-balance">
+        {title}
+      </h1>
+      <p class="mt-5 text-lead text-muted-foreground text-pretty">{tagline}</p>
     </header>
 
     <div class="station-content">
       <slot />
     </div>
 
-    <aside class="mt-16 rounded-2xl border-l-4 border-accent bg-surface p-7">
-      <p class="text-xs font-semibold tracking-[0.2em] text-accent uppercase">Takeaway</p>
-      <p class="mt-2 text-lead font-medium text-pretty">{takeaway}</p>
+    <aside class="mt-16 rounded-card border-l-4 border-accent bg-card p-6">
+      <p class="text-sm font-bold text-accent">Takeaway</p>
+      <p class="mt-2 text-lead font-bold text-card-foreground text-pretty">{takeaway}</p>
     </aside>
 
     <StationPager previous={neighbours.previous} next={neighbours.next} />
@@ -37,19 +39,23 @@ const { order, title, tagline, durationMinutes, takeaway } = station.data
 
 <style is:global>
   .station-content > * + * {
-    margin-block-start: 1.35em;
+    margin-block-start: 1.3em;
   }
   .station-content h2 {
-    margin-block-start: 2.2em;
-    font-size: 1.9em;
+    color: var(--color-foreground);
+    font-family: var(--font-display);
     font-weight: 700;
-    line-height: 1.15;
+    font-size: 1.75em;
+    letter-spacing: -1px;
+    line-height: 1.2;
+    margin-block-start: 2.2em;
     text-wrap: balance;
   }
   .station-content h3 {
+    color: var(--color-foreground);
+    font-size: 1.25em;
+    font-weight: 700;
     margin-block-start: 1.8em;
-    font-size: 1.3em;
-    font-weight: 600;
   }
   .station-content ul,
   .station-content ol {
@@ -64,9 +70,12 @@ const { order, title, tagline, durationMinutes, takeaway } = station.data
   .station-content li + li {
     margin-block-start: 0.5em;
   }
+  .station-content li::marker {
+    color: var(--color-muted-foreground);
+  }
   .station-content strong {
-    color: var(--color-accent);
-    font-weight: 650;
+    color: var(--color-foreground);
+    font-weight: 700;
   }
   .station-content a {
     color: var(--color-accent);
@@ -74,16 +83,16 @@ const { order, title, tagline, durationMinutes, takeaway } = station.data
     text-decoration-line: underline;
   }
   .station-content code {
-    background-color: var(--color-surface);
-    border-radius: 0.35em;
+    background-color: var(--color-secondary);
+    border-radius: var(--radius-container);
     font-family: var(--font-mono);
     font-size: 0.88em;
     padding: 0.15em 0.4em;
   }
   .station-content pre {
-    background-color: var(--color-surface) !important;
-    border: 1px solid var(--color-border-subtle);
-    border-radius: 0.9rem;
+    background-color: var(--color-card) !important;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
     font-size: 0.85em;
     overflow-x: auto;
     padding: 1.25rem 1.4rem;
@@ -93,8 +102,8 @@ const { order, title, tagline, durationMinutes, takeaway } = station.data
     padding: 0;
   }
   .station-content blockquote {
-    border-inline-start: 4px solid var(--color-border-subtle);
-    color: var(--color-ink-muted);
+    border-inline-start: 2px solid var(--color-border-strong);
+    color: var(--color-muted-foreground);
     font-style: italic;
     padding-inline-start: 1.2em;
   }
@@ -106,16 +115,14 @@ const { order, title, tagline, durationMinutes, takeaway } = station.data
   }
   .station-content th,
   .station-content td {
-    border-block-end: 1px solid var(--color-border-subtle);
+    border-block-end: 1px solid var(--color-border);
     padding: 0.7em 1em;
     text-align: start;
     vertical-align: top;
   }
   .station-content th {
-    color: var(--color-accent);
-    font-size: 0.8em;
-    font-weight: 650;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    color: var(--color-foreground);
+    font-size: 0.85em;
+    font-weight: 700;
   }
 </style>

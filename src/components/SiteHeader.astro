@@ -6,27 +6,25 @@ const stations = await loadStationsInOrder()
 const currentPath = Astro.url.pathname
 ---
 
-<header
-  class="sticky top-0 z-40 border-b border-border-subtle bg-canvas/85 backdrop-blur-md"
->
+<header class="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
   <nav
     aria-label="Workshop stations"
     class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3"
   >
     <a
       href={overviewRoute()}
-      class="text-sm font-semibold tracking-widest text-ink uppercase hover:text-accent"
+      class="text-sm font-bold text-foreground hover:text-accent"
     >
       Overview
     </a>
-    <ol class="flex flex-wrap items-center gap-x-4 gap-y-2">
+    <ol class="flex flex-wrap items-center gap-x-2 gap-y-2">
       {
         stations.map((station) => (
           <li>
             <a
               href={stationRoute(station.id)}
               aria-current={currentPath.includes(station.id) ? 'page' : undefined}
-              class="text-sm text-ink-muted hover:text-accent aria-[current=page]:font-semibold aria-[current=page]:text-accent"
+              class="block rounded-pill px-3 py-1 text-sm text-muted-foreground hover:text-foreground aria-[current=page]:bg-accent aria-[current=page]:font-bold aria-[current=page]:text-accent-foreground"
             >
               <span class="tabular-nums">{station.data.order}</span>
               <span class="ml-1.5 hidden sm:inline">{station.data.title}</span>

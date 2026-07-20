@@ -8,19 +8,17 @@ export default function StateMachineDemo() {
   const options = transitionsFrom(greetingMachine, currentId)
 
   return (
-    <figure className="not-prose my-10 overflow-hidden rounded-2xl border border-border-subtle bg-surface">
-      <div className="grid gap-6 p-6 md:grid-cols-[1fr_1fr]">
+    <figure className="my-10 overflow-hidden rounded-card border border-border bg-card">
+      <div className="grid gap-6 p-6 md:grid-cols-2">
         <ol className="flex flex-col gap-3">
           {greetingMachine.states.map((state) => (
             <StateRow key={state.id} state={state} isActive={state.id === currentId} />
           ))}
         </ol>
         <div className="flex flex-col gap-4">
-          <p className="text-ink-muted">{current.description}</p>
-          <p className="text-xs font-semibold tracking-[0.2em] text-ink-muted uppercase">
-            Possible events right now
-          </p>
-          <div className="flex flex-col gap-2">
+          <p className="text-muted-foreground">{current.description}</p>
+          <p className="text-sm font-bold text-card-foreground">Possible events right now</p>
+          <div className="flex flex-col items-start gap-2">
             {options.map((transition) => (
               <EventButton
                 key={transition.event}
@@ -32,13 +30,13 @@ export default function StateMachineDemo() {
           <button
             type="button"
             onClick={() => setCurrentId(greetingMachine.initial)}
-            className="self-start rounded-lg border border-border-subtle px-4 py-2 text-sm text-ink-muted hover:border-accent hover:text-accent"
+            className="self-start rounded-pill border border-border-strong px-5 py-2 text-sm font-bold text-card-foreground hover:border-accent"
           >
             Reset
           </button>
         </div>
       </div>
-      <figcaption className="border-t border-border-subtle px-6 py-3 text-sm text-ink-muted">
+      <figcaption className="border-t border-border px-6 py-3 text-sm text-muted-foreground">
         Every reaction has to be written down in advance. Nothing outside this diagram can happen.
       </figcaption>
     </figure>
@@ -51,8 +49,8 @@ function StateRow({ state, isActive }: { state: StateNode; isActive: boolean }) 
       aria-current={isActive ? 'step' : undefined}
       className={
         isActive
-          ? 'rounded-xl border-2 border-accent bg-canvas px-4 py-3 font-semibold text-accent'
-          : 'rounded-xl border-2 border-border-subtle px-4 py-3 text-ink-muted'
+          ? 'rounded-container border-2 border-accent bg-background px-4 py-3 font-bold text-accent'
+          : 'rounded-container border-2 border-border px-4 py-3 text-muted-foreground'
       }
     >
       {state.label}
@@ -65,7 +63,7 @@ function EventButton({ transition, onFire }: { transition: Transition; onFire: (
     <button
       type="button"
       onClick={onFire}
-      className="rounded-lg bg-accent px-4 py-2.5 text-left font-medium text-accent-ink hover:brightness-110"
+      className="rounded-pill bg-foreground px-5 py-2.5 text-left font-bold text-background hover:bg-accent hover:text-accent-foreground"
     >
       {transition.event} →
     </button>

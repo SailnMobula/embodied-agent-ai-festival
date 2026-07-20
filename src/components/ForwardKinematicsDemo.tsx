@@ -18,7 +18,7 @@ export default function ForwardKinematicsDemo() {
     setSegments(segments.map((segment, at) => (at === index ? { ...segment, angleDegrees } : segment)))
 
   return (
-    <figure className="not-prose my-10 overflow-hidden rounded-2xl border border-border-subtle bg-surface">
+    <figure className="my-10 overflow-hidden rounded-card border border-border bg-card">
       <div className="grid gap-6 p-6 md:grid-cols-[1.3fr_1fr] md:items-center">
         <ArmDrawing positions={positions} />
         <div className="flex flex-col gap-5">
@@ -33,13 +33,13 @@ export default function ForwardKinematicsDemo() {
           <button
             type="button"
             onClick={() => setSegments(INITIAL_SEGMENTS)}
-            className="self-start rounded-lg border border-border-subtle px-4 py-2 text-sm text-ink-muted hover:border-accent hover:text-accent"
+            className="self-start rounded-pill border border-border-strong px-5 py-2 text-sm font-bold text-card-foreground hover:border-accent"
           >
             Reset
           </button>
         </div>
       </div>
-      <figcaption className="border-t border-border-subtle px-6 py-3 text-sm text-ink-muted">
+      <figcaption className="border-t border-border px-6 py-3 text-sm text-muted-foreground">
         Forward kinematics: joint angles go in, the hand position comes out.
       </figcaption>
     </figure>
@@ -50,7 +50,7 @@ function ArmDrawing({ positions }: { positions: Point[] }) {
   return (
     <svg
       viewBox={`0 0 ${VIEWBOX.width} ${VIEWBOX.height}`}
-      className="w-full rounded-xl bg-canvas"
+      className="w-full rounded-container bg-background"
       role="img"
       aria-label="Two-dimensional robot arm rendered from the current joint angles"
     >
@@ -58,15 +58,20 @@ function ArmDrawing({ positions }: { positions: Point[] }) {
       <polyline
         points={positions.map((point) => `${point.x},${point.y}`).join(' ')}
         fill="none"
-        stroke="var(--color-ink-muted)"
+        stroke="var(--color-ex-grey-400)"
         strokeWidth={10}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       {positions.slice(0, -1).map((point, index) => (
-        <circle key={index} cx={point.x} cy={point.y} r={9} fill="var(--color-ink)" />
+        <circle key={index} cx={point.x} cy={point.y} r={9} fill="var(--color-ex-white)" />
       ))}
-      <circle cx={endEffectorOf(positions).x} cy={endEffectorOf(positions).y} r={13} fill="var(--color-accent)" />
+      <circle
+        cx={endEffectorOf(positions).x}
+        cy={endEffectorOf(positions).y}
+        r={13}
+        fill="var(--color-accent)"
+      />
     </svg>
   )
 }
@@ -78,7 +83,7 @@ function GroundLine({ y }: { y: number }) {
       y1={y}
       x2={VIEWBOX.width}
       y2={y}
-      stroke="var(--color-border-subtle)"
+      stroke="var(--color-border-strong)"
       strokeWidth={2}
       strokeDasharray="6 8"
     />
@@ -90,9 +95,9 @@ function AngleSlider({ segment, onChange }: { segment: Segment; onChange: (value
 
   return (
     <div>
-      <label htmlFor={sliderId} className="flex items-baseline justify-between text-sm font-medium">
-        <span>{segment.label}</span>
-        <span className="font-mono tabular-nums text-accent">{segment.angleDegrees}°</span>
+      <label htmlFor={sliderId} className="flex items-baseline justify-between text-sm font-bold">
+        <span className="text-card-foreground">{segment.label}</span>
+        <span className="font-mono text-muted-foreground tabular-nums">{segment.angleDegrees}°</span>
       </label>
       <input
         id={sliderId}
@@ -110,9 +115,9 @@ function AngleSlider({ segment, onChange }: { segment: Segment; onChange: (value
 
 function EndEffectorReadout({ position }: { position: Point }) {
   return (
-    <dl className="rounded-xl bg-canvas px-4 py-3 font-mono text-sm">
-      <dt className="text-xs tracking-widest text-ink-muted uppercase">End effector</dt>
-      <dd className="mt-1 tabular-nums">
+    <dl className="rounded-container bg-background px-4 py-3 font-mono text-sm">
+      <dt className="text-xs text-muted-foreground">End effector</dt>
+      <dd className="mt-1 text-foreground tabular-nums">
         x = {Math.round(position.x - ORIGIN.x)} &nbsp; y = {Math.round(ORIGIN.y - position.y)}
       </dd>
     </dl>
