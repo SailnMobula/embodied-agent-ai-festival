@@ -21,7 +21,7 @@ English.
 
 [Astro](https://astro.build) with [React](https://react.dev) islands and
 [Tailwind CSS](https://tailwindcss.com). Content pages ship zero JavaScript; only the two demos
-hydrate in the browser. See [docs/DECISIONS.md](docs/DECISIONS.md) for why.
+hydrate in the browser.
 
 Styling follows the Exxeta design system — tokens in `src/styles/global.css`, brand rules in
 [`.claude/skills/frontend-design/`](.claude/skills/frontend-design/SKILL.md). Sen and Bandeins
@@ -45,7 +45,6 @@ src/
   layouts/            page shells
   lib/                pure logic: kinematics, state machine, routing
   pages/              overview and the station route
-docs/DECISIONS.md     architectural decisions
 ```
 
 Station order, duration and titles live in each MDX file's frontmatter. Adding a station means
