@@ -1,10 +1,12 @@
 ---
-order: 3
+order: 2
 title: Cameras and perception
-tagline: What the robot actually sees, and how raw pixels become "there is a person".
+tagline: How raw pixels become "there is a person, and their hand is up".
 durationMinutes: 10
-takeaway: Perception is not one sensor. It is several, each blind in a different way, combined into one picture.
+takeaway: No model detects waving. Models report coordinates — a human wrote the rule that turns coordinates into meaning.
 ---
+
+import PerceptionOutputs from '@/components/PerceptionOutputs.astro'
 
 ## What the X2 Ultra has on board
 
@@ -14,31 +16,85 @@ takeaway: Perception is not one sensor. It is several, each blind in a different
 - **Point clouds** — the depth image turned into a cloud of measured points in 3D space. Not a
   smooth model of the room, just a few hundred thousand dots the sensor was able to hit.
 
-A <strong>point cloud</strong> is the room as a scatter of measured dots — no surfaces, no
-objects, just positions the sensor could reach.
+A camera image on its own means nothing to a robot. It is a grid of numbers. Everything that
+follows is about turning that grid into something a program can act on.
 
-> Open point: pick a screenshot of a real point cloud from the X2 to show here.
+## Three ways to answer "where?"
 
-## From pixels to meaning
+Computer vision is not one task. Ask a model where the person is and you get a different kind of
+answer depending on what it was built for.
 
-A camera image on its own means nothing to the robot. A perception model turns it into labels and
-positions — a box drawn around each thing it recognises, with a name attached.
+<PerceptionOutputs />
 
-> Open point: decide which one or two perception models to walk through, and whether the live
-> detection runs embedded on this page or in a separate window.
+Same image, same person, three different outputs. Which one you need depends entirely on what you
+plan to do next — and for a wave, only the third one will do.
 
-## Live: person detection
+## YOLO — one look is enough
 
-This is the skill Station 5 depends on. The agent cannot decide "wave at that person" unless
-something underneath it is continuously answering the question "is there a person, and where".
+**YOLO** stands for *You Only Look Once*, and the name is the whole idea.
 
-> Placeholder: live camera feed with bounding boxes.
+Older detectors worked by searching. They slid a window across the image, or proposed a few
+thousand candidate regions, and asked "is it here? is it here? is it here?" — running the
+classifier hundreds of times per frame. Accurate, and far too slow for a robot.
+
+YOLO turns detection into a single pass. The image is divided into a grid, and in **one** run
+through the network every cell simultaneously predicts: is the centre of an object in me, how big
+is its box, and what class is it. One look, all objects at once.
+
+That change is what made realtime detection possible — dozens of frames per second on a machine
+you can put inside a robot. Accuracy per frame is somewhat lower than the slow methods, but a
+robot that answers in 20 milliseconds beats one that answers perfectly two seconds too late.
+
+> Live demo: YOLO detection running in a dora-rs pipeline.
+
+## MediaPipe — from a box to a skeleton
+
+A box is not enough to recognise a gesture. For that we need joints, and that is what
+**MediaPipe** provides. It is Google's toolkit of small models built to run on-device — phones,
+laptops, robots — rather than in a data centre.
+
+Its pose solution works in two stages, and the second stage is the interesting one:
+
+1. **Detect once.** A lightweight detector locates the person in the frame and crops to them.
+2. **Then track.** A second model runs on that crop and predicts **33 landmarks** — nose,
+   shoulders, elbows, wrists, hips, knees, ankles — each as an x/y coordinate plus a rough depth
+   and a confidence value.
+
+For the next frame it does not detect again. It reuses the previous skeleton to guess where the
+person moved and re-runs only the landmark model. Detection is expensive; tracking is cheap. That
+is the trick that keeps it realtime.
+
+The output is worth being precise about. MediaPipe returns **33 points with coordinates**. It does
+not return "standing", "pointing" or "waving". It has no concept of those things.
+
+## So how do we detect a wave?
+
+We write it ourselves. That is the honest answer, and it is the point of this station.
+
+Given the skeleton, "waving" becomes plain geometry over time:
+
+1. Is the wrist **above the shoulder**? Compare two y-coordinates.
+2. Is the elbow bent, so the arm is raised rather than pointing?
+3. Does the wrist **move side to side** across roughly a second — left, right, left again?
+
+Three conditions, all true at once, and we call it a wave. No neural network was trained on waving.
+No model was asked "is this person waving". A person looked at what MediaPipe outputs, decided what
+a wave looks like as numbers, and typed it out.
+
+This is exactly the pattern from Station 1, one level down. The model supplies raw perception; a
+human supplies the meaning. In Station 4 this becomes a **skill** the robot can offer, and in
+Station 5 the agent gets to decide *when* to care about it — but nobody, at any point, taught an AI
+what waving is.
 
 ## Where it breaks
 
 Worth saying out loud during the demo, because it is the honest part:
 
 - Backlight and glass surfaces wreck depth measurements.
-- A model only recognises what it was trained on. Everything else is invisible to it, not
+- A model only recognises what it was trained on. Everything else is invisible to it, rather than
   "unknown".
-- Detections flicker between frames. Anything built on top has to tolerate that.
+- Landmarks jitter between frames. Every rule built on top has to tolerate that — which is why the
+  wave check looks at a full second instead of a single frame.
+- Our wave rule is a guess about human behaviour. Someone waving slowly, with a straight arm, or
+  holding a bag, will not register. Widening the rule to catch them starts catching people who are
+  just scratching their head.

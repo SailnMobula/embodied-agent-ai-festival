@@ -1,0 +1,112 @@
+---
+const HEAD = { x: 60, y: 30, r: 13 }
+const JOINTS = {
+  neck: [60, 45],
+  hip: [60, 95],
+  elbowLeft: [42, 72],
+  handLeft: [36, 92],
+  elbowRight: [82, 52],
+  handRight: [92, 34],
+  kneeLeft: [50, 118],
+  footLeft: [47, 142],
+  kneeRight: [72, 118],
+  footRight: [76, 142],
+}
+
+const BONES = [
+  ['neck', 'hip'],
+  ['neck', 'elbowLeft'],
+  ['elbowLeft', 'handLeft'],
+  ['neck', 'elbowRight'],
+  ['elbowRight', 'handRight'],
+  ['hip', 'kneeLeft'],
+  ['kneeLeft', 'footLeft'],
+  ['hip', 'kneeRight'],
+  ['kneeRight', 'footRight'],
+]
+
+const bonePath = (from: string, to: string) => {
+  const [x1, y1] = JOINTS[from as keyof typeof JOINTS]
+  const [x2, y2] = JOINTS[to as keyof typeof JOINTS]
+  return { x1, y1, x2, y2 }
+}
+
+const outputs = [
+  {
+    name: 'Object detection',
+    answer: 'A box and a label.',
+    detail: 'Something is there, and roughly where. Nothing about its shape or posture.',
+  },
+  {
+    name: 'Segmentation',
+    answer: 'A pixel-exact outline.',
+    detail: 'Which pixels belong to the person. Useful for grasping and for avoiding obstacles.',
+  },
+  {
+    name: 'Pose estimation',
+    answer: 'A set of joint coordinates.',
+    detail: 'Where the wrists, elbows and shoulders are. This is what a wave is made of.',
+  },
+]
+---
+
+<figure class="my-10 grid gap-4 sm:grid-cols-3">
+  {
+    outputs.map((output, index) => (
+      <div class="rounded-card border border-border bg-card p-5">
+        <svg viewBox="0 0 120 160" class="w-full" role="presentation">
+          {index === 0 && (
+            <>
+              <rect
+                x={28}
+                y={14}
+                width={66}
+                height={136}
+                rx={2}
+                fill="none"
+                stroke="var(--color-accent)"
+                stroke-width={3}
+              />
+              <rect x={28} y={0} width={66} height={14} fill="var(--color-accent)" />
+              <text x={32} y={10} font-size={9} font-family="var(--font-mono)" fill="#000">
+                person 0.94
+              </text>
+            </>
+          )}
+
+          {index === 1 && (
+            <g stroke="var(--color-accent)" stroke-width={20} stroke-linecap="round" fill="none">
+              {BONES.map(([from, to]) => <line {...bonePath(from, to)} />)}
+            </g>
+          )}
+
+          <g
+            stroke="var(--color-ex-grey-600)"
+            stroke-width={index === 2 ? 2 : 5}
+            stroke-linecap="round"
+            fill="none"
+          >
+            {BONES.map(([from, to]) => <line {...bonePath(from, to)} />)}
+          </g>
+          <circle
+            cx={HEAD.x}
+            cy={HEAD.y}
+            r={HEAD.r}
+            fill={index === 1 ? 'var(--color-accent)' : 'var(--color-ex-grey-600)'}
+            stroke={index === 1 ? 'var(--color-ex-grey-600)' : 'none'}
+            stroke-width={3}
+          />
+
+          {index === 2 &&
+            Object.values(JOINTS).map(([cx, cy]) => (
+              <circle cx={cx} cy={cy} r={5} fill="var(--color-accent)" stroke="#000" stroke-width={1.5} />
+            ))}
+        </svg>
+
+        <p class="mt-4 font-bold text-card-foreground">{output.name}</p>
+        <p class="mt-1 text-sm font-bold text-muted-foreground">{output.answer}</p>
+        <p class="mt-2 text-sm text-muted-foreground">{output.detail}</p>
+      </div>
+    ))
+  }
+</figure>
