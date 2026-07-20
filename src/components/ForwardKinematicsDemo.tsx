@@ -58,13 +58,13 @@ function ArmDrawing({ positions }: { positions: Point[] }) {
       <polyline
         points={positions.map((point) => `${point.x},${point.y}`).join(' ')}
         fill="none"
-        stroke="var(--color-ex-grey-400)"
+        stroke="var(--color-ex-grey-600)"
         strokeWidth={10}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       {positions.slice(0, -1).map((point, index) => (
-        <circle key={index} cx={point.x} cy={point.y} r={9} fill="var(--color-ex-white)" />
+        <circle key={index} cx={point.x} cy={point.y} r={9} fill="var(--color-foreground)" />
       ))}
       <circle
         cx={endEffectorOf(positions).x}

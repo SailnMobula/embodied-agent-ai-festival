@@ -49,7 +49,7 @@ function StateRow({ state, isActive }: { state: StateNode; isActive: boolean }) 
       aria-current={isActive ? 'step' : undefined}
       className={
         isActive
-          ? 'rounded-container border-2 border-accent bg-background px-4 py-3 font-bold text-accent'
+          ? 'rounded-container border-2 border-accent bg-accent/15 px-4 py-3 font-bold text-foreground'
           : 'rounded-container border-2 border-border px-4 py-3 text-muted-foreground'
       }
     >

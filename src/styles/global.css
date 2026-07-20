@@ -34,6 +34,8 @@
 @theme {
   --color-ex-black: #000000;
   --color-ex-white: #ffffff;
+  --color-ex-grey-20: #fafafa;
+  --color-ex-grey-50: #f2f2f2;
   --color-ex-grey-100: #e6e6e6;
   --color-ex-grey-200: #cccccc;
   --color-ex-grey-400: #999999;
@@ -43,15 +45,15 @@
   --color-ex-turquoise-500: #46dcff;
   --color-ex-blue-500: #8ca5ff;
 
-  --color-background: var(--color-ex-black);
-  --color-foreground: var(--color-ex-white);
-  --color-card: var(--color-ex-grey-800);
-  --color-card-foreground: var(--color-ex-white);
-  --color-secondary: var(--color-ex-grey-800);
-  --color-muted-foreground: var(--color-ex-grey-400);
-  --color-body: var(--color-ex-grey-100);
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-border-strong: rgba(255, 255, 255, 0.15);
+  --color-background: var(--color-ex-grey-20);
+  --color-foreground: var(--color-ex-black);
+  --color-card: var(--color-ex-white);
+  --color-card-foreground: var(--color-ex-black);
+  --color-secondary: var(--color-ex-grey-50);
+  --color-muted-foreground: var(--color-ex-grey-600);
+  --color-body: var(--color-ex-black);
+  --color-border: var(--color-ex-grey-100);
+  --color-border-strong: var(--color-ex-grey-200);
   --color-accent: var(--color-ex-turquoise-500);
   --color-accent-foreground: var(--color-ex-black);
   --color-info: var(--color-ex-blue-500);
@@ -72,7 +74,7 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
