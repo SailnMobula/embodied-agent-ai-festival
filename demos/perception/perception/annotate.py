@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 
 from .detection import Detection
+from .hands import Hand, hand_connections
 from .pose_estimation import Pose, skeleton_connections
 from .segmentation import Segmentation
 
@@ -48,6 +49,22 @@ def draw_pose(rgb: np.ndarray, pose: Pose, keep: tuple[int, ...] | None = None) 
         cv2.line(out, points[a], points[b], ACCENT, line)
     for index in kept:
         cv2.circle(out, points[index], max(3, round(width / 200)), ACCENT, -1)
+    return out
+
+
+def draw_hands(rgb: np.ndarray, hands: list[Hand]) -> np.ndarray:
+    out = rgb.copy()
+    height, width = rgb.shape[:2]
+    connections = hand_connections()
+    line = max(2, round(width / 300))
+    joint = max(3, round(width / 220))
+
+    for hand in hands:
+        points = [(int(x * width), int(y * height)) for x, y in hand.landmarks]
+        for a, b in connections:
+            cv2.line(out, points[a], points[b], ACCENT, line)
+        for point in points:
+            cv2.circle(out, point, joint, ACCENT, -1)
     return out
 
 
