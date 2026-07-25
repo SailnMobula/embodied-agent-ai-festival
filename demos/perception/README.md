@@ -44,26 +44,16 @@ uv run detect.py --webcam 0
 uv run pose.py --webcam 0
 ```
 
-**Linux / the robot** — live works, and so does record-and-playback:
+**Linux / the robot** — the depth demos work live, and off a recording:
 
 ```bash
 uv run depth.py                       # live
-uv run depth.py --bag scene.bag       # recorded
-uv run fuse.py --bag scene.bag
+uv run depth.py --bag clip.bag        # recorded
+uv run fuse.py --bag clip.bag
 ```
 
-**macOS** — live `pyrealsense2` segfaults on enumeration, and `rs-record` writes a `.db3` the
-older macOS Python binding cannot play back. The route that works: record with the C tool, export
-raw depth frames, view them as a cloud.
-
-```bash
-sudo rs-record -t 15 -f scene.db3               # depth-only clip
-rs-convert -i scene.db3 -f 60 -t 150 -r frames/d   # export raw z16 depth
-uv run depth_raw.py frames/*Depth*.raw           # 3D cloud, coloured by distance
-```
-
-`depth_raw.py` colours the cloud by distance (the recording carries no colour stream). For a full
-RGB-D cloud, record and run on Linux / the robot.
+On macOS, live `pyrealsense2` segfaults on enumeration, so the depth demos only run on Linux or the
+robot. The webcam demos above cover the whole workshop.
 
 ## Suggested run order on stage
 
@@ -84,7 +74,7 @@ on a recorded `.bag` — good for slides.
 ```bash
 uv run --extra footage footage.py --webcam 0 --prompt "person. laptop. cup."
 uv run --extra footage footage.py photo.jpg --prompt "person. robot. box."
-uv run --extra footage footage.py --bag scene.bag --stride 15 --limit 20 --prompt "person."
+uv run --extra footage footage.py --bag clip.bag --stride 15 --limit 20 --prompt "person."
 ```
 
 `--webcam 0` grabs a single frame from the camera and prompts it — the "point, snap, name it"
