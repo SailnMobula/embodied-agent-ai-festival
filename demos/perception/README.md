@@ -45,18 +45,17 @@ uv run pose.py --webcam 0
 ```
 
 **Record once, play back live** — the robust path for `depth.py` and `fuse.py`, which need depth.
-Record a `.bag` with the RealSense tools, then:
+The Python binding segfaults on enumeration on this Mac, but the C tool `rs-record` (from
+`brew install librealsense`) does not. Record a clip, then play it back:
 
 ```bash
+rs-record -f scene.bag        # Ctrl-C to stop
 uv run depth.py --bag scene.bag
 uv run fuse.py --bag scene.bag
 ```
 
-Live RealSense (when it cooperates) is just the default — no flag:
-
-```bash
-uv run detect.py
-```
+Live RealSense is the default (no flag) and works on Linux / the robot, but **not on this Mac** —
+`pyrealsense2` segfaults enumerating the device. On macOS, use `--webcam` or `--bag`.
 
 ## Suggested run order on stage
 

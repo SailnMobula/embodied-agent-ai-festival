@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -70,6 +71,13 @@ class RealSenseSource(FrameSource):
 
     def start(self) -> None:
         import pyrealsense2 as rs
+
+        if self._bag_path is None and sys.platform == "darwin":
+            print(
+                "Live RealSense on macOS is unreliable and can crash the process. "
+                "If this hangs or segfaults, rehearse with --webcam 0, or record a .bag and pass --bag <file>.",
+                file=sys.stderr,
+            )
 
         pipeline, config = rs.pipeline(), rs.config()
         if self._bag_path:

@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import os
+
+os.environ.setdefault("DO_NOT_TRACK", "1")
+
 import numpy as np
 import rerun as rr
 
