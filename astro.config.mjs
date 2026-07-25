@@ -7,5 +7,8 @@ export default defineConfig({
   site: 'https://exxeta.github.io',
   base: '/embodied-agent-ai-festival',
   integrations: [react(), mdx()],
+  markdown: {
+    shikiConfig: { theme: 'catppuccin-latte' },
+  },
   vite: { plugins: [tailwindcss()] },
 })
