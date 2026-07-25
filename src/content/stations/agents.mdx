@@ -9,47 +9,32 @@ takeaway: An LLM only talks. Memory, reasoning and skills are what turn it into 
 import AgentArchitecture from '@/components/AgentArchitecture.astro'
 import StateMachineDemo from '@/components/StateMachineDemo.tsx'
 
-## The question everyone got wrong once
+## A brain in a sealed jar
 
-Think back to the first time you used ChatGPT. Someone asked it something like _"what's the
-weather today?"_ or _"what's playing at the cinema tonight?"_ — and it answered. Confidently. With
-information from the day its training stopped, months out of date, presented as if it were true
-right now.
+Think back to your first question to ChatGPT. Someone asked it for today's weather, and it
+answered. Confidently. Out of a frozen snapshot of the web.
 
-The reflex is to say the model was too old, or too small. It is neither. Ask the newest, largest
-model on the market the same question this second and it hits the same wall — because the answer was
-never inside it. A language model is a brain in a sealed jar: everything it ever read, frozen, with
-no window to the world and no hands to reach through.
+- The newest, largest model hits the same wall today
+- The answer was never inside it
+- No window to the world, no hands to reach through
 
-So the interesting question is not "how do we build a smarter brain?" It is: **what do we have to
-add to the jar to make it useful?**
+So the question is not how to build a smarter brain. It is what we add to the jar.
 
-## Adding the missing pieces
+## What we add
 
 <AgentArchitecture />
 
-Take the pieces one at a time, because each one answers a concrete failure of the brain alone.
+- **Memory**: the brain forgets everything the moment you hit send
+- **Skills**: a door in the jar, a camera to look through, an arm to move
+- **Reasoning**: turning "find someone and wave" into steps
 
-- **Memory** — the brain forgets everything the moment you hit send. Give it memory and the
-  conversation, the last attempt, the thing it noticed a minute ago all stay available.
-- **Skills** — the brain cannot _do_ anything, only produce text. A skill is a door in the jar:
-  check the weather, run a search, look through a camera. Now "what's the weather?" has an answer,
-  because the model can go and get one. This is the word to hold on to — it runs through every
-  station today.
-- **Reasoning** — a real task is vague. "Find someone and wave" is not one action. Reasoning is the
-  brain breaking that into steps and deciding which skill to reach for at each one.
+An LLM with memory, reasoning and skills around it. That bundle is the agent, and **skill** is the
+word that carries through every station today.
 
-An **LLM** with **memory**, **reasoning** and **skills** wrapped around it — that bundle is what we
-mean by an agent. Not a bigger model. The same brain, given a memory, a plan and a set of doors.
+> **Live demo: switch to the terminal.** Ask a small local model for the weather in Kassel and
+> watch it invent an answer. The fix was never a better model, it was a door.
 
-> **Live demo — switch to the terminal.** Ask a small local model _"what is the weather in Kassel
-> right now?"_ and watch it invent a confident answer with no way to check. Then point back at the
-> **Skills** block: the fix was never a better model, it was giving the brain a door.
-
-## Skills you already know, and skills you don't
-
-The word "skill" is not robotics jargon. A coding assistant has skills too — they just act on
-files instead of on the world.
+## Skills you already know
 
 | Skill in the web and PC world | Skill in the embodied world                    |
 | ----------------------------- | ---------------------------------------------- |
@@ -61,18 +46,15 @@ files instead of on the world.
 The pattern is identical. Only the consequences differ: a wrong file write is undone with one
 command, a wrong arm movement is not.
 
-## How classical robots are programmed today
+## How robots are programmed today
 
-Before agents, and still almost everywhere in production, a robot runs a **state machine**: a fixed
-set of situations and fixed rules for moving between them. Try the one below — it is the "walk
-around and wave at people" task, written the traditional way.
+A **state machine**: a fixed set of situations, fixed rules for moving between them. Below is the
+"walk around and wave at people" task, written the traditional way.
 
 <StateMachineDemo client:visible />
 
-Notice what you cannot do: anything that is not already a button. There is no event for "the person
-is waving first", no event for "two people arrived at once". Every single case had to be imagined by
-a developer, in advance, and typed out.
+- No event for "the person waves first"
+- No event for "two people arrived at once"
+- Every case imagined by a developer, in advance, and typed out
 
-That is the wall an agent is built to get over — the same brain from the top of this page, now
-allowed to decide for itself which skill fits the moment. We wire exactly this task up as an agent
-in Station 5.
+Station 5 wires up this exact task as an agent.
