@@ -26,5 +26,12 @@ def wave(arm: str = "right", times: int = 1) -> str:
 
 The docstring is the whole interface. It is what the model reads when it decides.
 
+**Function calling** is the mechanism underneath. The model moves nothing itself. It emits a call
+with the values it picked, and our software runs the function:
+
+```json
+{ "name": "wave", "arguments": { "arm": "right", "times": 2 } }
+```
+
 > **Live demo: fire a skill without the model.** Test `wave` in the panel. Then stand too close and
 > watch the same call get refused.
