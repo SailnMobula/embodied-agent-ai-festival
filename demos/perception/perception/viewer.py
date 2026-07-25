@@ -31,14 +31,14 @@ def init(title: str, spawn: bool = True, save_path: str | None = None) -> None:
         rr.spawn()
 
 
-def enable_pose_skeleton() -> None:
+def enable_pose_skeleton(keep: tuple[int, ...] | None = None) -> None:
     rr.log(
         "world",
         rr.AnnotationContext(
             [
                 rr.ClassDescription(
                     info=rr.AnnotationInfo(id=_POSE_CLASS, label="pose"),
-                    keypoint_connections=skeleton_connections(),
+                    keypoint_connections=skeleton_connections(keep),
                 )
             ]
         ),
@@ -76,14 +76,15 @@ def log_segmentation(segmentation: Segmentation) -> None:
     rr.log(MASKS, rr.SegmentationImage(segmentation.label_map))
 
 
-def log_pose(pose: Pose, width: int, height: int) -> None:
-    positions = [[x * width, y * height] for x, y in pose.landmarks]
+def log_pose(pose: Pose, width: int, height: int, keep: tuple[int, ...] | None = None) -> None:
+    indices = range(len(pose.landmarks)) if keep is None else keep
+    positions = [[pose.landmarks[i][0] * width, pose.landmarks[i][1] * height] for i in indices]
     rr.log(
         SKELETON,
         rr.Points2D(
             positions,
             class_ids=_POSE_CLASS,
-            keypoint_ids=list(range(len(positions))),
+            keypoint_ids=list(indices),
             radii=4.0,
         ),
     )

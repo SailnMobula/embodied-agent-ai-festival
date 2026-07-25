@@ -61,19 +61,25 @@ Live RealSense is the default (no flag) and works on Linux / the robot, but **no
 
 1. `detect.py` — "the robot finds people." Boxes.
 2. `segment.py` — "not just where, but exactly which pixels." Masks.
-3. `pose.py` — "down to the joints." Skeleton. Wave at the camera → the status log flips to
-   `WAVE`. This is the exact signal the robot's wave-back reacts to.
+3. `pose.py` — "down to the joints." Upper-body skeleton (arms and hands, no legs — pass
+   `--full-body` for all 33 landmarks). Wave at the camera → the status log flips to `WAVE`. This
+   is the exact signal the robot's wave-back reacts to.
 4. `depth.py` — spin the point cloud. "This is how the robot sees — in 3D, not a flat picture."
 5. `fuse.py` — "and it knows *where in the room* each person is." Labels floating in the cloud.
 
 ## Footage (optional, heavy)
 
-`footage.py` reuses the zero-shot GroundingDINO + SAM pipeline from `projects/rausch` for
-high-quality masks from a text prompt — good for slides, too slow for live.
+`footage.py` reuses the zero-shot GroundingDINO + SAM pipeline from `projects/rausch`: name what
+you want with a text prompt and get high-quality masks. Too slow for live, so run it on stills or
+on a recorded `.bag` — good for slides.
 
 ```bash
 uv run --extra footage footage.py photo.jpg --prompt "person. robot. box."
+uv run --extra footage footage.py --bag scene.bag --stride 15 --limit 20 --prompt "person."
 ```
+
+Prompts are lowercase phrases, each ending in a period. Weights (~3 GB) download on first use;
+they are shared with `projects/rausch` if you have run that.
 
 ## Tests
 

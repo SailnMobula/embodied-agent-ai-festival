@@ -57,6 +57,8 @@ class RealSenseSource(FrameSource):
         bag_path: str | None = None,
         warmup_frames: int = 30,
         max_depth_m: float = 4.0,
+        bag_repeat: bool = True,
+        bag_realtime: bool = True,
     ):
         self._width = width
         self._height = height
@@ -64,6 +66,8 @@ class RealSenseSource(FrameSource):
         self._bag_path = bag_path
         self._warmup_frames = warmup_frames
         self._max_depth_m = max_depth_m
+        self._bag_repeat = bag_repeat
+        self._bag_realtime = bag_realtime
         self._pipeline = None
         self._align = None
         self._depth_scale = 1.0
@@ -81,14 +85,14 @@ class RealSenseSource(FrameSource):
 
         pipeline, config = rs.pipeline(), rs.config()
         if self._bag_path:
-            config.enable_device_from_file(self._bag_path, repeat_playback=True)
+            config.enable_device_from_file(self._bag_path, repeat_playback=self._bag_repeat)
         else:
             config.enable_stream(rs.stream.depth, self._width, self._height, rs.format.z16, self._fps)
             config.enable_stream(rs.stream.color, self._width, self._height, rs.format.bgr8, self._fps)
 
         profile = pipeline.start(config)
         if self._bag_path:
-            profile.get_device().as_playback().set_real_time(True)
+            profile.get_device().as_playback().set_real_time(self._bag_realtime)
 
         self._depth_scale = profile.get_device().first_depth_sensor().get_depth_scale()
         self._align = rs.align(rs.stream.color)
@@ -103,7 +107,12 @@ class RealSenseSource(FrameSource):
             self._pipeline = None
 
     def read(self) -> Frame | None:
-        frames = self._align.process(self._pipeline.wait_for_frames())
+        try:
+            raw = self._pipeline.wait_for_frames()
+        except RuntimeError:
+            return None
+
+        frames = self._align.process(raw)
         color_frame = frames.get_color_frame()
         depth_frame = frames.get_depth_frame()
         if not color_frame or not depth_frame:

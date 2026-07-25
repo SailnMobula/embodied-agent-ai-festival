@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 
+os.environ.setdefault("GLOG_minloglevel", "2")
+
 DEFAULT_MODEL = Path(__file__).resolve().parent.parent / "models" / "pose_landmarker_lite.task"
+
+UPPER_BODY_LANDMARKS = (11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
 
 
 @dataclass(frozen=True)
@@ -14,10 +19,14 @@ class Pose:
     visibilities: list[float]
 
 
-def skeleton_connections() -> list[tuple[int, int]]:
+def skeleton_connections(keep: tuple[int, ...] | None = None) -> list[tuple[int, int]]:
     from mediapipe.tasks.python import vision
 
-    return [(c.start, c.end) for c in vision.PoseLandmarksConnections.POSE_LANDMARKS]
+    connections = [(c.start, c.end) for c in vision.PoseLandmarksConnections.POSE_LANDMARKS]
+    if keep is None:
+        return connections
+    kept = set(keep)
+    return [(a, b) for a, b in connections if a in kept and b in kept]
 
 
 class PoseEstimator:
