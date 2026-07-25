@@ -21,7 +21,7 @@ export const ENTRY_MARKER = { x: 16, y: 140, radius: 6, endX: 40 }
 
 export const DIAGRAM_NODES: DiagramNode[] = [
   { id: 'idle', x: 100, y: 140, width: 120, height: 54 },
-  { id: 'patrolling', x: 330, y: 140, width: 160, height: 54 },
+  { id: 'watching', x: 330, y: 140, width: 160, height: 54 },
   { id: 'personDetected', x: 590, y: 140, width: 200, height: 54 },
   { id: 'waving', x: 440, y: 320, width: 140, height: 54 },
 ]
@@ -29,14 +29,14 @@ export const DIAGRAM_NODES: DiagramNode[] = [
 export const DIAGRAM_EDGES: DiagramEdge[] = [
   {
     from: 'idle',
-    to: 'patrolling',
+    to: 'watching',
     path: 'M 160 128 Q 205 92 250 128',
     labelX: 205,
     labelY: 80,
     labelAnchor: 'middle',
   },
   {
-    from: 'patrolling',
+    from: 'watching',
     to: 'idle',
     path: 'M 250 152 Q 205 188 160 152',
     labelX: 205,
@@ -44,7 +44,7 @@ export const DIAGRAM_EDGES: DiagramEdge[] = [
     labelAnchor: 'middle',
   },
   {
-    from: 'patrolling',
+    from: 'watching',
     to: 'personDetected',
     path: 'M 410 128 Q 450 92 490 128',
     labelX: 450,
@@ -53,7 +53,7 @@ export const DIAGRAM_EDGES: DiagramEdge[] = [
   },
   {
     from: 'personDetected',
-    to: 'patrolling',
+    to: 'watching',
     path: 'M 490 152 Q 450 188 410 152',
     labelX: 450,
     labelY: 208,
@@ -69,7 +69,7 @@ export const DIAGRAM_EDGES: DiagramEdge[] = [
   },
   {
     from: 'waving',
-    to: 'patrolling',
+    to: 'watching',
     path: 'M 388 293 Q 340 240 330 167',
     labelX: 314,
     labelY: 246,

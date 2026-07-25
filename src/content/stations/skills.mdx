@@ -1,46 +1,68 @@
 ---
 order: 4
 title: Skills
-tagline: The robot's individual abilities, each one demonstrated on its own before the agent gets to use them.
+tagline: What this robot can actually be asked to do, one ability at a time.
 durationMinutes: 10
-takeaway: A skill is a plain function with a name and parameters. The agent does not know how it works, only when to call it.
+takeaway: A skill is a name, a description and a robot capability behind it. The model reads the description and never touches a motor.
 ---
 
-## One ability at a time
+import SkillCatalogue from '@/components/SkillCatalogue.astro'
 
-Every skill gets shown alone first. Once the agent is running, success and failure blur together.
+## A skill is a function the model may call
 
-A skill has three parts:
+Four fields, and the second one does the real work:
 
-1. A **name** the model can read
-2. **Parameters**, whatever has to be decided per call
-3. A **description** in plain language
-
-That description is not documentation for humans. It is the interface the model reads when it
-picks a skill.
+- **name**, lowercase with underscores, because it becomes a function name
+- **description**, the sentence that tells the model when to reach for it
+- **kind**, which robot capability it binds to
+- **target**, the concrete gesture, face, sound or sector
 
 ```json
 {
   "name": "wave",
-  "description": "Wave at a person in view. Use when someone greets the robot.",
-  "parameters": {
-    "arm": { "type": "string", "enum": ["left", "right"] },
-    "duration_s": { "type": "number", "default": 2 }
-  }
+  "description": "Wave at a person in view. Use when someone greets Marvin.",
+  "kind": "action",
+  "target": "wave",
+  "side_param": true,
+  "repeat": true,
+  "timeout_ms": 0,
+  "security_gate": "lidar"
 }
 ```
 
-**Function calling** is the mechanism. The model moves nothing itself. It emits "call `wave` with
-these values" and our software runs it.
+The description is not documentation for us. It is the only thing the model reads when it decides.
 
-## The catalogue
+## What the X2 exposes
 
-> Open point: choose the three or four skills to demonstrate live. Each one gets a card here with
-> its plain-language description and its schema.
+<SkillCatalogue />
 
-## Why this framing matters
+- `action` fires a gesture, a face and a sound together, so `wave` is one call, not three
+- `timeout_ms: 0` means fire and forget: the tool returns at once and the arm keeps moving
+- `side_param` lets the model pick the arm, `repeat` lets it wave up to three times in one call
 
-- Every skill on this page is written by hand, tested by hand, safe by construction
-- Station 5 adds no new abilities
-- What it adds is the choice: which skill, when, with which parameters, without anyone writing that
-  decision down beforehand
+## The gate sits under every move
+
+Nothing that moves the body goes out unchecked. The LiDAR reports clearance per sector, and a
+blocked move comes back as `ok: false` with HTTP 200, because a refusal is an answer, not a crash.
+
+- Blocked moves used to fail silently, so a child waved and the robot did nothing
+- Now the robot plays `no_space` instead: a face and a sound, deliberately no gesture
+- Dropping the gesture is the point, since it would walk straight back into the gate that just
+  refused one
+
+> **Live demo: fire a skill without the model.** X2 Ops, Skills panel, Test. Stand clear and the
+> wave plays. Step into the front sector and the same call answers `ok: false`.
+
+## What it cannot do
+
+Worth saying plainly, because the room will assume otherwise:
+
+- **No walking to a target.** No skill exposes it, and the joint write path is still behind the
+  safety review
+- **Small movements** are an idle fidget inside a 50 by 50 cm box, armed by an operator who
+  confirmed the space behind the robot, six steps and it disarms itself
+- **No odometry.** The robot never measures where it stands, it only adds up the steps it commanded
+- **One speaker.** Hand it to the vendor app and the robot goes silent, stops listening and stops
+  gesturing
+
+Station 5 hands this catalogue to a model and lets it choose.

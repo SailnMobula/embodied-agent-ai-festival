@@ -1,0 +1,58 @@
+---
+const groups = [
+  {
+    name: 'Move',
+    note: 'Every move is checked by the LiDAR gate first',
+    kinds: [
+      { kind: 'action', detail: 'gesture, face and sound at once' },
+      { kind: 'gesture', detail: 'a single motion, left or right arm' },
+    ],
+  },
+  {
+    name: 'Express',
+    note: 'No gate, nothing moves',
+    kinds: [
+      { kind: 'face', detail: 'an emotion or a video on the head screen' },
+      { kind: 'sound', detail: 'a cue or an mp3, one speaker only' },
+    ],
+  },
+  {
+    name: 'Sense',
+    note: 'The model asks, the robot looks',
+    kinds: [
+      { kind: 'detect_people', detail: 'counts people in frame, 3 s' },
+      { kind: 'detect_gestures', detail: 'names hand gestures, 3 s' },
+      { kind: 'distance', detail: 'LiDAR clearance per sector, in metres' },
+    ],
+  },
+  {
+    name: 'Know',
+    note: 'Plain network reads, no robot involved',
+    kinds: [
+      { kind: 'clock', detail: 'date, time, weekday' },
+      { kind: 'weather', detail: 'Open-Meteo for a place the model names' },
+      { kind: 'directions', detail: 'distance and travel time' },
+    ],
+  },
+]
+---
+
+<figure class="my-10 grid gap-4 sm:grid-cols-2">
+  {
+    groups.map((group) => (
+      <div class="rounded-card border border-border bg-card p-5">
+        <p class="font-bold text-card-foreground">{group.name}</p>
+        <p class="mt-1 text-sm text-muted-foreground">{group.note}</p>
+
+        <dl class="mt-4 flex flex-col gap-2">
+          {group.kinds.map((entry) => (
+            <div class="rounded-container bg-background px-3 py-2">
+              <dt class="font-mono text-sm text-foreground">{entry.kind}</dt>
+              <dd class="text-sm text-muted-foreground">{entry.detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    ))
+  }
+</figure>
