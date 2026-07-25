@@ -32,14 +32,14 @@ prompt to name anything in the room, separated by periods. "Instead of a fixed l
 ask for what I want in words." Runs in a few seconds, not realtime, so it takes a single photo.
 Opens just the picture with boxes, no 3D view. Add `--mask` if you ever want SAM outlines too.
 
-## 3. Segmentation — YOLO-seg, live
+## 3. Segmentation — SAM, snap a photo and outline it
 
 ```bash
-uv run segment.py --webcam 0
+uv run --extra footage footage.py --webcam 0 --prompt "person" --mask
 ```
 
-Same live feed, but pixel-exact masks instead of boxes. "Not just where someone is, but exactly
-which pixels are them."
+Same snapshot as demo 2, but now SAM traces the exact outline of what GroundingDINO found, not just
+a box. "Point at it by name, and it cuts out the exact pixels." A few seconds, not realtime.
 
 ## 4. Pose — upper body, live, with wave detection
 
@@ -48,8 +48,18 @@ uv run pose.py --webcam 0
 ```
 
 Upper-body skeleton (arms and hands). Wave at the camera and the status log flips to `WAVE`.
-"The robot does not detect waving — it detects joints, and a rule we wrote turns wrist-above-shoulder
+"The robot does not detect waving, it detects joints, and a rule we wrote turns wrist-above-shoulder
 plus side-to-side motion into a wave."
+
+## 5. Depth Anything — 3D from a single photo
+
+```bash
+uv run --extra footage depth_anything.py --webcam 0
+```
+
+Takes one webcam photo and a model guesses the distance of every pixel, with no depth camera. Rerun
+shows the coloured depth map and a 3D point cloud you can orbit. "One flat photo in, a 3D scene out."
+The depth is relative, not measured in metres, but the shape of the room is real.
 
 ## Before the talk
 

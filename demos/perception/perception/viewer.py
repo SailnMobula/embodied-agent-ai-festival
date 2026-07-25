@@ -64,6 +64,10 @@ def log_image(rgb: np.ndarray) -> None:
     rr.log(IMAGE, rr.Image(rgb))
 
 
+def log_depth_map(coloured_depth: np.ndarray) -> None:
+    rr.log("depth_map", rr.Image(coloured_depth))
+
+
 def log_detections(detections: list[Detection]) -> None:
     rr.log(
         BOXES,
