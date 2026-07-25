@@ -1,62 +1,59 @@
 ---
 order: 3
-title: Kinematics and motion
-tagline: Joint angles go in, a position in space comes out — and there are two very different ways to decide those angles.
+title: Joints, angles, motion
+tagline: Every movement a robot makes is a list of angles. The only question is who writes the list.
 durationMinutes: 8
-takeaway: A taught motion is a recording. A trained motion is a policy. The same robot waves with one and stands with the other.
+takeaway: Record the angles and you get a wave. Reward the behaviour and you get walking. Both arrive at the motors as numbers.
 ---
 
+import JointsAndLinks from '@/components/JointsAndLinks.astro'
 import ForwardKinematicsDemo from '@/components/ForwardKinematicsDemo.tsx'
-import TaughtVsTrained from '@/components/TaughtVsTrained.astro'
+import LocomotionTraining from '@/components/LocomotionTraining.astro'
 
-## The robot does not know where its hand is
+## Same description, you and the robot
 
-No sense of touch, no eye watching itself. All it knows is how far each motor has turned.
+<JointsAndLinks />
 
-Turning that set of angles into "the hand is _here_" is **forward kinematics** — pure geometry, no
-AI involved. The tip of the chain has a name: the **end effector**, the hand that touches the world.
+- **Joint** — a place that turns.
+- **Link** — the rigid piece between two joints. Your bones.
+- **Angle** — how far a joint is turned.
 
-## Try it
+## Angles in, position out
 
 <ForwardKinematicsDemo client:visible />
 
-- Every joint drags everything downstream of it along.
-- One degree at the shoulder moves the hand further than one degree at the wrist. That is why the
-  joints closest to the body carry the expensive motors.
+- Pure geometry. No AI. This is **forward kinematics**.
+- The last point is the **end effector** — the hand.
+- Every joint drags everything after it.
+- A degree at the shoulder moves the hand further than a degree at the wrist.
 
-The other direction — _"put the hand there, work out the angles yourself"_ — is **inverse
-kinematics**: often many answers, sometimes none. Not today.
+## Teaching is recording
 
-## Where the angles come from
+Press **Record**, move the sliders, press **Replay**.
 
-<TaughtVsTrained />
+- A taught motion is angles plus timestamps.
+- Replay is exact. Every time.
+- It looks at nothing. It reacts to nothing.
 
-> **Live demo — the robot waves.** Play the taught wave and watch the joint angles scroll past.
-> Run it twice: the same motion, to the degree. Then look at what is _not_ in that file — no idea
-> where the person is, no answer if someone steps into the arm's path.
+> **Live demo — the robot waves.** Same trick, real hardware: a file of joint angles, played back.
+> Run it twice, it is identical to the degree.
 
-Teaching wins whenever the motion _is_ the goal: a gesture, a fixed pick-and-place, anything that
-has to look the same in front of an audience. Its limit is hard — a recording cannot react.
+## Training is not a list
 
-## Standing is not a recording
+Balance is a reaction. No file answers a shove.
 
-Balance is a reaction. The floor is uneven, the load shifts, someone nudges the robot in the back.
-No list of angles answers a shove, so walking is not taught. It is trained.
+<LocomotionTraining />
 
-1. **Simulate.** Thousands of copies of the robot walk in parallel, far faster than real time.
-2. **Reward.** Points for staying upright and moving forward; penalties for falling, flailing,
-   burning current. Nobody describes a gait — the gait is whatever scores well.
-3. **Randomise, then transfer.** Vary mass, friction, sensor delay, terrain. A policy that survives
-   that spread has a chance on real hardware. What it does not survive is the **sim-to-real** gap.
+- Reward: upright, moving forward. Penalty: falling, flailing, burning current.
+- Nobody writes a gait.
+- Vary mass, friction, delay, terrain — then move it to real hardware. That gap is **sim-to-real**.
 
-The result is a habit, not a trajectory: sensors in, joint targets out, fifty times a second,
-forever. Ask why it moved that one ankle and there is nothing to read. Which is also why balance
-never gets handed to a language model — it runs far below it.
+Out comes a **policy**: sensors in, joint targets out, fifty times a second. Ask why it moved that
+ankle — there is no answer to read.
 
-## Both, on the same robot
+## On this robot
 
-- **Wave** — taught. Exact, repeatable, blind.
-- **Stand, balance, walk** — trained. Reactive, robust, unexplainable.
+- **Wave** — taught. A recording.
+- **Stand, balance, walk** — trained. A policy.
 
-In Station 5 the agent calls both as skills and cannot tell which is which. It decides _when_,
-never _how_.
+Station 5: the agent calls both, and cannot tell which is which.

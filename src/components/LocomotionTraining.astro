@@ -1,0 +1,105 @@
+---
+const GROUND = 104
+const ATTEMPTS = [
+  { x: 44, tilt: -29 },
+  { x: 67, tilt: -15 },
+  { x: 113, tilt: 17 },
+  { x: 136, tilt: 31 },
+]
+
+const CURVE = 'M 24 96 L 44 88 L 58 92 L 74 70 L 90 76 L 108 52 L 126 46 L 146 34 L 160 30'
+---
+
+<figure class="my-10 grid gap-4 sm:grid-cols-2">
+  <div class="rounded-card border border-border bg-card p-5">
+    <svg viewBox="0 0 180 120" class="w-full" role="presentation">
+      <line
+        x1={16}
+        y1={GROUND}
+        x2={164}
+        y2={GROUND}
+        stroke="var(--color-border-strong)"
+        stroke-width={2}
+        stroke-dasharray="6 8"
+      />
+
+      {
+        ATTEMPTS.map(({ x, tilt }) => (
+          <g
+            transform={`translate(${x} ${GROUND}) rotate(${tilt})`}
+            stroke="var(--color-border-strong)"
+            stroke-width={3}
+            stroke-linecap="round"
+            fill="none"
+          >
+            <circle cx={0} cy={-46} r={5} fill="var(--color-border-strong)" stroke="none" />
+            <line x1={0} y1={-41} x2={0} y2={-22} />
+            <line x1={0} y1={-36} x2={-9} y2={-26} />
+            <line x1={0} y1={-36} x2={9} y2={-26} />
+            <line x1={0} y1={-22} x2={-6} y2={0} />
+            <line x1={0} y1={-22} x2={6} y2={0} />
+          </g>
+        ))
+      }
+
+      <g
+        transform={`translate(90 ${GROUND})`}
+        stroke="var(--color-ex-grey-600)"
+        stroke-width={4}
+        stroke-linecap="round"
+        fill="none"
+      >
+        <circle cx={0} cy={-46} r={6} fill="var(--color-ex-grey-600)" stroke="none" />
+        <line x1={0} y1={-40} x2={0} y2={-22} />
+        <line x1={0} y1={-36} x2={-9} y2={-26} />
+        <line x1={0} y1={-36} x2={9} y2={-26} />
+        <line x1={0} y1={-22} x2={-6} y2={0} />
+        <line x1={0} y1={-22} x2={6} y2={0} />
+      </g>
+
+      <path
+        d="M 46 58 A 44 44 0 0 1 134 58"
+        fill="none"
+        stroke="var(--color-accent)"
+        stroke-width={2}
+      />
+      <polygon points="130,50 138,50 134,61" fill="var(--color-accent)" />
+    </svg>
+
+    <p class="mt-4 font-bold text-card-foreground">Try. Fall. Again.</p>
+    <p class="mt-1 text-sm text-muted-foreground">Thousands of robots, in simulation, all at once.</p>
+  </div>
+
+  <div class="rounded-card border border-border bg-card p-5">
+    <svg viewBox="0 0 180 120" class="w-full" role="presentation">
+      <line
+        x1={24}
+        y1={104}
+        x2={164}
+        y2={104}
+        stroke="var(--color-border-strong)"
+        stroke-width={2}
+      />
+      <line x1={24} y1={20} x2={24} y2={104} stroke="var(--color-border-strong)" stroke-width={2} />
+
+      <path
+        d={CURVE}
+        fill="none"
+        stroke="var(--color-accent)"
+        stroke-width={3}
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+
+      <g font-family="var(--font-mono)" font-size={8} fill="var(--color-ex-grey-600)">
+        <text x={4} y={16}>reward</text>
+        <text x={112} y={118}>attempts</text>
+      </g>
+    </svg>
+
+    <p class="mt-4 font-bold text-card-foreground">Score, do not script.</p>
+    <p class="mt-1 text-sm text-muted-foreground">
+      Upright and moving forward scores. Falling does not. The gait is whatever scores best.
+    </p>
+  </div>
+</figure>

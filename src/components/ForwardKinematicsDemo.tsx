@@ -143,7 +143,7 @@ function RecorderControls({
         >
           Replay
         </ControlButton>
-        <ControlButton onClick={onReset} disabled={mode !== 'idle'}>
+        <ControlButton onClick={onReset} disabled={mode === 'recording'}>
           Reset
         </ControlButton>
       </div>

@@ -1,0 +1,137 @@
+---
+const CHAIN = [
+  { x: 30, y: 78 },
+  { x: 74, y: 50 },
+  { x: 118, y: 60 },
+  { x: 156, y: 38 },
+]
+
+const JOINT_LABELS = [
+  { x: 40, y: 60, anchor: 'end' },
+  { x: 74, y: 32, anchor: 'middle' },
+  { x: 118, y: 42, anchor: 'middle' },
+]
+
+const LINK_LABELS = [
+  { x: 58, y: 88 },
+  { x: 96, y: 78 },
+  { x: 140, y: 70 },
+]
+
+const HUMAN = { joints: ['shoulder', 'elbow', 'wrist'], links: ['upper arm', 'forearm', 'hand'] }
+const ROBOT = { joints: ['θ₁', 'θ₂', 'θ₃'], links: ['link', 'link', 'link'] }
+
+const chainPoints = CHAIN.map((point) => `${point.x},${point.y}`).join(' ')
+---
+
+<figure class="my-10 grid gap-4 sm:grid-cols-2">
+  <div class="rounded-card border border-border bg-card p-5">
+    <svg viewBox="0 0 180 100" class="w-full" role="presentation">
+      <polyline
+        points={chainPoints}
+        fill="none"
+        stroke="var(--color-ex-grey-600)"
+        stroke-width={9}
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      {CHAIN.map((point) => <circle cx={point.x} cy={point.y} r={4.5} fill="var(--color-ex-white)" />)}
+
+      <g font-family="var(--font-mono)" font-size={8} fill="var(--color-ex-grey-600)">
+        {
+          HUMAN.joints.map((label, index) => (
+            <text
+              x={JOINT_LABELS[index].x}
+              y={JOINT_LABELS[index].y}
+              text-anchor={JOINT_LABELS[index].anchor}
+            >
+              {label}
+            </text>
+          ))
+        }
+        {
+          HUMAN.links.map((label, index) => (
+            <text x={LINK_LABELS[index].x} y={LINK_LABELS[index].y} text-anchor="middle">
+              {label}
+            </text>
+          ))
+        }
+      </g>
+    </svg>
+
+    <p class="mt-4 font-bold text-card-foreground">You</p>
+    <p class="mt-1 text-sm text-muted-foreground">Bones between joints. Muscles turn the joints.</p>
+  </div>
+
+  <div class="rounded-card border border-border bg-card p-5">
+    <svg viewBox="0 0 180 100" class="w-full" role="presentation">
+      <polyline
+        points={chainPoints}
+        fill="none"
+        stroke="var(--color-ex-grey-600)"
+        stroke-width={9}
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+
+      <line
+        x1={CHAIN[1].x}
+        y1={CHAIN[1].y}
+        x2={99.4}
+        y2={33.9}
+        stroke="var(--color-border-strong)"
+        stroke-width={1.5}
+        stroke-dasharray="3 3"
+      />
+      <path
+        d="M 92.6 38.2 A 22 22 0 0 1 95.5 54.9"
+        fill="none"
+        stroke="var(--color-accent)"
+        stroke-width={2.5}
+      />
+
+      {
+        CHAIN.slice(0, -1).map((point) => (
+          <circle
+            cx={point.x}
+            cy={point.y}
+            r={5.5}
+            fill="var(--color-ex-white)"
+            stroke="var(--color-ex-grey-800)"
+            stroke-width={2}
+          />
+        ))
+      }
+      <circle cx={CHAIN[3].x} cy={CHAIN[3].y} r={7} fill="var(--color-accent)" />
+
+      <g font-family="var(--font-mono)" font-size={8} fill="var(--color-ex-grey-600)">
+        {
+          ROBOT.joints.map((label, index) => (
+            <text
+              x={JOINT_LABELS[index].x}
+              y={JOINT_LABELS[index].y}
+              text-anchor={JOINT_LABELS[index].anchor}
+            >
+              {label}
+            </text>
+          ))
+        }
+        {
+          ROBOT.links.map((label, index) => (
+            <text x={LINK_LABELS[index].x} y={LINK_LABELS[index].y} text-anchor="middle">
+              {label}
+            </text>
+          ))
+        }
+      </g>
+    </svg>
+
+    <p class="mt-4 font-bold text-card-foreground">The robot</p>
+    <p class="mt-1 text-sm text-muted-foreground">Links between joints. Motors turn the joints.</p>
+  </div>
+</figure>
+
+<div class="rounded-card border border-border bg-card px-5 py-5 text-center">
+  <p class="font-mono text-lead text-card-foreground">pose = [55°, −40°, −25°]</p>
+  <p class="mt-2 text-sm text-muted-foreground">The entire state of the arm.</p>
+</div>
