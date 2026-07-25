@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { chainPositions, endEffectorOf, type Point, type Segment } from '@/lib/forwardKinematics'
 import { anglesAt, appendFrame, durationOf, type Recording } from '@/lib/motionRecording'
 
@@ -13,11 +13,12 @@ const INITIAL_SEGMENTS: Segment[] = [
 
 type Mode = 'idle' | 'recording' | 'replaying'
 
-export default function ForwardKinematicsDemo() {
+export default function ForwardKinematicsDemo({ recorder = true }: { recorder?: boolean }) {
   const [segments, setSegments] = useState(INITIAL_SEGMENTS)
   const [recording, setRecording] = useState<Recording>([])
   const [mode, setMode] = useState<Mode>('idle')
   const startedAt = useRef(0)
+  const instance = useId()
 
   const positions = chainPositions(ORIGIN, segments)
   const anglesOf = (of: Segment[]) => of.map((segment) => segment.angleDegrees)
@@ -80,28 +81,33 @@ export default function ForwardKinematicsDemo() {
           {segments.map((segment, index) => (
             <AngleSlider
               key={segment.label}
+              sliderId={`${instance}-${segment.label.toLowerCase()}`}
               segment={segment}
               disabled={mode === 'replaying'}
               onChange={(angleDegrees) => updateAngle(index, angleDegrees)}
             />
           ))}
           <EndEffectorReadout position={endEffectorOf(positions)} />
-          <RecorderControls
-            mode={mode}
-            recording={recording}
-            onRecord={startRecording}
-            onStop={stopRecording}
-            onReplay={() => setMode('replaying')}
-            onReset={() => {
-              setSegments(INITIAL_SEGMENTS)
-              setRecording([])
-              setMode('idle')
-            }}
-          />
+          {recorder && (
+            <RecorderControls
+              mode={mode}
+              recording={recording}
+              onRecord={startRecording}
+              onStop={stopRecording}
+              onReplay={() => setMode('replaying')}
+              onReset={() => {
+                setSegments(INITIAL_SEGMENTS)
+                setRecording([])
+                setMode('idle')
+              }}
+            />
+          )}
         </div>
       </div>
       <figcaption className="border-t border-border px-6 py-3 text-sm text-muted-foreground">
-        Angles in, hand position out. Record the angles over time and the motion can be replayed.
+        {recorder
+          ? 'Record the angles over time and the same motion plays back.'
+          : 'Angles in, hand position out.'}
       </figcaption>
     </figure>
   )
@@ -231,16 +237,16 @@ function GroundLine({ y }: { y: number }) {
 }
 
 function AngleSlider({
+  sliderId,
   segment,
   disabled,
   onChange,
 }: {
+  sliderId: string
   segment: Segment
   disabled: boolean
   onChange: (value: number) => void
 }) {
-  const sliderId = `angle-${segment.label.toLowerCase()}`
-
   return (
     <div>
       <label htmlFor={sliderId} className="flex items-baseline justify-between text-sm font-bold">

@@ -6,11 +6,11 @@ durationMinutes: 10
 takeaway: Record the angles and you get a wave. Show it a hundred demonstrations or pay it a reward, and you get a policy.
 ---
 
-import JointsAndLinks from '@/components/JointsAndLinks.astro'
-import ForwardKinematicsDemo from '@/components/ForwardKinematicsDemo.tsx'
-import VideoFigure from '@/components/VideoFigure.astro'
-import ImitationLearning from '@/components/ImitationLearning.astro'
-import LocomotionTraining from '@/components/LocomotionTraining.astro'
+import JointsAndLinks from "@/components/JointsAndLinks.astro";
+import ForwardKinematicsDemo from "@/components/ForwardKinematicsDemo.tsx";
+import VideoFigure from "@/components/VideoFigure.astro";
+import ImitationLearning from "@/components/ImitationLearning.astro";
+import LocomotionTraining from "@/components/LocomotionTraining.astro";
 
 ## Same description, you and the robot
 
@@ -22,7 +22,7 @@ import LocomotionTraining from '@/components/LocomotionTraining.astro'
 
 ## Angles in, position out
 
-<ForwardKinematicsDemo client:visible />
+<ForwardKinematicsDemo client:visible recorder={false} />
 
 - Pure geometry, no AI: **forward kinematics**
 - The last point is the **end effector**, the hand
@@ -33,6 +33,8 @@ import LocomotionTraining from '@/components/LocomotionTraining.astro'
 
 Press **Record**, move the sliders, press **Replay**.
 
+<ForwardKinematicsDemo client:visible />
+
 - Angles plus timestamps, nothing else
 - Replay is exact, every time
 - It looks at nothing and reacts to nothing
@@ -40,9 +42,9 @@ Press **Record**, move the sliders, press **Replay**.
 > **Live demo: the robot waves.** A file of joint angles, played back on real hardware. Run it
 > twice and it is identical to the degree.
 
-## Walking cannot be recorded
+## Walking and Reinforcement Learning
 
-Balance is a reaction. No file answers a shove.
+Walking cannot be recorded. Balance is a reaction.
 
 <VideoFigure
   src="g1-velocity-training.mp4"
@@ -50,32 +52,10 @@ Balance is a reaction. No file answers a shove.
   caption="Hundreds of humanoids learning to walk in simulation. Blue is the commanded direction, green is what the robot actually did."
 />
 
-Two ways out of this, and the robot uses both.
-
-## Learning from demonstrations
-
-<ImitationLearning />
-
-- Cameras, depth and joint positions, recorded in step
-- A hundred runs of the same task, done by a person in VR
-- No reward, no rules, only examples
-- Same idea as the recorder above, except it generalises to boxes it never saw
-
-The model in the middle is a **VLA**: vision, language and action in one network. We trained one on
-our own lifting data.
-
-## Learning from reward
-
-<LocomotionTraining />
-
 - No data, no demonstrations
 - A reward says what counts: upright, forward, smooth, no crash
-- Randomised mass, friction, delay and terrain, so the policy survives outside the simulator
 
-Nobody writes a gait. The gait is whatever scores best.
-
-Out comes a **policy**: sensors in, joint targets out, fifty times a second. Ask why it moved that
-ankle and there is no answer to read.
+Out comes a **policy**: sensors in, joint targets out
 
 ## On this robot
 
