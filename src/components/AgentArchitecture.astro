@@ -1,0 +1,49 @@
+---
+const parts = [
+  {
+    name: 'Memory',
+    role: 'What happened so far',
+    detail: 'The conversation, what it already tried, what it learned a minute ago.',
+  },
+  {
+    name: 'Reasoning',
+    role: 'Break the goal into steps',
+    detail: 'Turn "find someone and wave" into a plan the skills can actually carry out.',
+  },
+  {
+    name: 'Skills',
+    role: 'Act on the world',
+    detail: 'Check the weather, search the web, look through a camera, move an arm.',
+  },
+]
+---
+
+<figure class="my-10 rounded-card border border-border bg-card p-6 sm:p-8">
+  <p class="text-center text-sm font-bold text-muted-foreground">Agent</p>
+
+  <div class="mx-auto mt-4 max-w-sm rounded-container border-2 border-accent bg-background p-5 text-center">
+    <p class="font-display text-2xl text-card-foreground">LLM</p>
+    <p class="mt-1 text-sm text-muted-foreground">
+      The brain. Reads the situation, decides what to do next.
+    </p>
+  </div>
+
+  <div class="mx-auto my-3 h-6 w-px bg-border-strong" aria-hidden="true"></div>
+
+  <div class="grid gap-4 sm:grid-cols-3">
+    {
+      parts.map((part) => (
+        <div class="rounded-container border border-border bg-background p-5">
+          <p class="font-bold text-card-foreground">{part.name}</p>
+          <p class="mt-1 text-sm font-bold text-muted-foreground">{part.role}</p>
+          <p class="mt-2 text-sm text-muted-foreground">{part.detail}</p>
+        </div>
+      ))
+    }
+  </div>
+
+  <figcaption class="mt-6 text-center text-sm text-muted-foreground">
+    An LLM alone can only talk. Wrap it in memory, reasoning and skills and it can act — that
+    wrapper is the agent.
+  </figcaption>
+</figure>
