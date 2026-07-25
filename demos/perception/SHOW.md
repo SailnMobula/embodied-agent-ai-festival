@@ -41,15 +41,15 @@ uv run --extra footage footage.py --webcam 0 --prompt "person" --mask
 Same snapshot as demo 2, but now SAM traces the exact outline of what GroundingDINO found, not just
 a box. "Point at it by name, and it cuts out the exact pixels." A few seconds, not realtime.
 
-## 4. Pose — upper body, live, with wave detection
+## 4. Pose — arm and fingers, live, with wave detection
 
 ```bash
 uv run pose.py --webcam 0
 ```
 
-Upper-body skeleton (arms and hands). Wave at the camera and the status log flips to `WAVE`.
-"The robot does not detect waving, it detects joints, and a rule we wrote turns wrist-above-shoulder
-plus side-to-side motion into a wave."
+The arm from the body model, the fingers from the hand model, drawn together. Wave at the camera
+and the status log flips to `WAVE`. "The robot does not detect waving, it detects joints, and a
+rule we wrote turns wrist-above-shoulder plus side-to-side motion into a wave."
 
 ## 5. Depth Anything — 3D from a single photo
 

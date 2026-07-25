@@ -11,6 +11,7 @@ os.environ.setdefault("GLOG_minloglevel", "2")
 DEFAULT_MODEL = Path(__file__).resolve().parent.parent / "models" / "pose_landmarker_lite.task"
 
 UPPER_BODY_LANDMARKS = (11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24)
+ARM_LANDMARKS = (11, 12, 13, 14, 15, 16)
 
 
 @dataclass(frozen=True)
