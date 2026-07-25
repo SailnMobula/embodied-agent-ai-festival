@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { chainPositions, endEffectorOf, type Point, type Segment } from '@/lib/forwardKinematics'
+import { anglesAt, appendFrame, durationOf, type Recording } from '@/lib/motionRecording'
 
 const ORIGIN: Point = { x: 200, y: 320 }
 const VIEWBOX = { width: 520, height: 380 }
@@ -10,12 +11,66 @@ const INITIAL_SEGMENTS: Segment[] = [
   { label: 'Wrist', angleDegrees: -25, length: 60 },
 ]
 
+type Mode = 'idle' | 'recording' | 'replaying'
+
 export default function ForwardKinematicsDemo() {
   const [segments, setSegments] = useState(INITIAL_SEGMENTS)
-  const positions = chainPositions(ORIGIN, segments)
+  const [recording, setRecording] = useState<Recording>([])
+  const [mode, setMode] = useState<Mode>('idle')
+  const startedAt = useRef(0)
 
-  const updateAngle = (index: number, angleDegrees: number) =>
-    setSegments(segments.map((segment, at) => (at === index ? { ...segment, angleDegrees } : segment)))
+  const positions = chainPositions(ORIGIN, segments)
+  const anglesOf = (of: Segment[]) => of.map((segment) => segment.angleDegrees)
+
+  const updateAngle = (index: number, angleDegrees: number) => {
+    const next = segments.map((segment, at) =>
+      at === index ? { ...segment, angleDegrees } : segment,
+    )
+    setSegments(next)
+
+    if (mode === 'recording') {
+      setRecording((frames) =>
+        appendFrame(frames, performance.now() - startedAt.current, anglesOf(next)),
+      )
+    }
+  }
+
+  const startRecording = () => {
+    startedAt.current = performance.now()
+    setRecording([{ atMs: 0, angles: anglesOf(segments) }])
+    setMode('recording')
+  }
+
+  const stopRecording = () => {
+    setRecording((frames) =>
+      appendFrame(frames, performance.now() - startedAt.current, anglesOf(segments)),
+    )
+    setMode('idle')
+  }
+
+  useEffect(() => {
+    if (mode !== 'replaying') return
+
+    const playbackStartedAt = performance.now()
+    let request = 0
+
+    const tick = () => {
+      const elapsed = performance.now() - playbackStartedAt
+      const angles = anglesAt(recording, elapsed)
+      setSegments((current) =>
+        current.map((segment, joint) => ({ ...segment, angleDegrees: Math.round(angles[joint]) })),
+      )
+
+      if (elapsed >= durationOf(recording)) {
+        setMode('idle')
+        return
+      }
+      request = requestAnimationFrame(tick)
+    }
+
+    request = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(request)
+  }, [mode, recording])
 
   return (
     <figure className="my-10 overflow-hidden rounded-card border border-border bg-card">
@@ -26,23 +81,108 @@ export default function ForwardKinematicsDemo() {
             <AngleSlider
               key={segment.label}
               segment={segment}
+              disabled={mode === 'replaying'}
               onChange={(angleDegrees) => updateAngle(index, angleDegrees)}
             />
           ))}
           <EndEffectorReadout position={endEffectorOf(positions)} />
-          <button
-            type="button"
-            onClick={() => setSegments(INITIAL_SEGMENTS)}
-            className="self-start rounded-pill border border-border-strong px-5 py-2 text-sm font-bold text-card-foreground hover:border-accent"
-          >
-            Reset
-          </button>
+          <RecorderControls
+            mode={mode}
+            recording={recording}
+            onRecord={startRecording}
+            onStop={stopRecording}
+            onReplay={() => setMode('replaying')}
+            onReset={() => {
+              setSegments(INITIAL_SEGMENTS)
+              setRecording([])
+              setMode('idle')
+            }}
+          />
         </div>
       </div>
       <figcaption className="border-t border-border px-6 py-3 text-sm text-muted-foreground">
-        Forward kinematics: joint angles go in, the hand position comes out.
+        Angles in, hand position out. Record the angles over time and the motion can be replayed.
       </figcaption>
     </figure>
+  )
+}
+
+function RecorderControls({
+  mode,
+  recording,
+  onRecord,
+  onStop,
+  onReplay,
+  onReset,
+}: {
+  mode: Mode
+  recording: Recording
+  onRecord: () => void
+  onStop: () => void
+  onReplay: () => void
+  onReset: () => void
+}) {
+  const seconds = (durationOf(recording) / 1000).toFixed(1)
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap gap-2">
+        {mode === 'recording' ? (
+          <ControlButton onClick={onStop} active>
+            Stop
+          </ControlButton>
+        ) : (
+          <ControlButton onClick={onRecord} disabled={mode === 'replaying'}>
+            Record
+          </ControlButton>
+        )}
+        <ControlButton
+          onClick={onReplay}
+          disabled={mode !== 'idle' || recording.length < 2}
+          active={mode === 'replaying'}
+        >
+          Replay
+        </ControlButton>
+        <ControlButton onClick={onReset} disabled={mode !== 'idle'}>
+          Reset
+        </ControlButton>
+      </div>
+      <p className="font-mono text-xs text-muted-foreground" aria-live="polite">
+        {mode === 'recording' && 'recording…'}
+        {mode === 'replaying' && 'replaying…'}
+        {mode === 'idle' &&
+          (recording.length < 2
+            ? 'wave.json — empty'
+            : `wave.json — ${recording.length} frames · ${seconds} s`)}
+      </p>
+    </div>
+  )
+}
+
+function ControlButton({
+  onClick,
+  disabled,
+  active,
+  children,
+}: {
+  onClick: () => void
+  disabled?: boolean
+  active?: boolean
+  children: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`rounded-pill border px-5 py-2 text-sm font-bold disabled:opacity-40 ${
+        active
+          ? 'border-accent text-accent-foreground'
+          : 'border-border-strong text-card-foreground enabled:hover:border-accent'
+      }`}
+    >
+      {children}
+    </button>
   )
 }
 
@@ -90,7 +230,15 @@ function GroundLine({ y }: { y: number }) {
   )
 }
 
-function AngleSlider({ segment, onChange }: { segment: Segment; onChange: (value: number) => void }) {
+function AngleSlider({
+  segment,
+  disabled,
+  onChange,
+}: {
+  segment: Segment
+  disabled: boolean
+  onChange: (value: number) => void
+}) {
   const sliderId = `angle-${segment.label.toLowerCase()}`
 
   return (
@@ -106,6 +254,7 @@ function AngleSlider({ segment, onChange }: { segment: Segment; onChange: (value
         max={150}
         step={1}
         value={segment.angleDegrees}
+        disabled={disabled}
         onChange={(event) => onChange(Number(event.target.value))}
         className="mt-2 w-full accent-[var(--color-accent)]"
       />
