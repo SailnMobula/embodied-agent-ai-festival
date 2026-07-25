@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 import numpy as np
 from PIL import Image
@@ -34,6 +35,12 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=20, help="Stop after this many bag frames")
     parser.add_argument("--prompt", default="person.", help="Lowercase phrases, each ending in a period")
     args = parser.parse_args()
+
+    if not args.images and not args.bag:
+        parser.error("give one or more image files, or --bag <file>")
+    missing = [path for path in args.images if not Path(path).is_file()]
+    if missing:
+        parser.error(f"no such image file(s): {', '.join(missing)}")
 
     source = frames_from_bag(args.bag, args.stride, args.limit) if args.bag else frames_from_images(args.images)
 
