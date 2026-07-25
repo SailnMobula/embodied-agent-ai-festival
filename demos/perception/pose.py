@@ -1,18 +1,37 @@
 import argparse
 
-from perception import viewer
+import numpy as np
+from PIL import Image
+
+from perception import annotate, viewer
 from perception.cli import add_source_arguments, build_source
 from perception.pose_estimation import UPPER_BODY_LANDMARKS, PoseEstimator
 from perception.wave import WaveDetector
+
+
+def render_image(path: str, out: str, keep: tuple[int, ...] | None) -> None:
+    rgb = np.array(Image.open(path).convert("RGB"))
+    pose = PoseEstimator().estimate(rgb, timestamp_seconds=0.0)
+    if pose is None:
+        raise SystemExit(f"No person found in {path}")
+    annotate.save(annotate.draw_pose(rgb, pose, keep), out)
+    print(f"saved {out}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Live pose estimation and wave detection in Rerun")
     add_source_arguments(parser)
     parser.add_argument("--full-body", action="store_true", help="Draw all 33 landmarks, not just the upper body")
+    parser.add_argument("--image", help="Run on one image instead of a live source")
+    parser.add_argument("--out", help="With --image, save an annotated PNG instead of opening Rerun")
     args = parser.parse_args()
 
     keep = None if args.full_body else UPPER_BODY_LANDMARKS
+
+    if args.image and args.out:
+        render_image(args.image, args.out, keep)
+        return
+
     estimator = PoseEstimator()
     wave_detector = WaveDetector()
     viewer.init("pose")

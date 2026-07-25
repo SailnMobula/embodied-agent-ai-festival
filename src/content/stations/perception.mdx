@@ -11,7 +11,8 @@ import PerceptionOutputs from '@/components/PerceptionOutputs.astro'
 ## Three answers to one question
 
 A camera hands the robot a grid of numbers. Perception turns that grid into an answer to one
-question: where is the person? Three models give three answers, each finer than the last.
+question: where is something, and what is it? Three models give three answers, each finer than the
+last.
 
 <PerceptionOutputs />
 
@@ -19,19 +20,30 @@ Same frame, three outputs. None of them needs the others. You pick the answer yo
 
 ## A box
 
-The loosest answer: a rectangle and a label. It says a person is there and roughly where. It runs
-many frames a second, so it keeps up while the robot moves.
+![A detector asked for a cup, drawing a box around it](../../assets/perception/detection.png)
+
+The loosest answer: a rectangle and a label. Here the model was asked for a cup and boxed it. That
+is enough to know the object is there and roughly where. It runs many frames a second, so it keeps
+up while the robot moves.
+
+Common detectors are YOLO, RT-DETR and Grounding DINO.
 
 ## An outline
 
-Tighter: the exact pixels that belong to the person. This is the answer you need to grasp an
-object or to step around it.
+![SAM tracing the exact pixels of the same cup](../../assets/perception/segmentation.png)
+
+Tighter: the exact pixels of the object. SAM traced the cup, handle and all. This is the answer you
+need to grasp it or to step around it.
+
+Common here are YOLO for fast masks and Segment Anything for precise ones.
 
 ## A skeleton
 
-The most specific: the position of each joint, shoulders, elbows, wrists. It reads the joints
-straight from the image, so it needs neither the box nor the outline first. A wave lives here, in
-how the wrists move, where a box can never see it.
+The most specific: the position of each joint. It reads the joints straight from the image, so it
+needs neither the box nor the outline first. A wave lives here, in how the wrists move, where a box
+can never see it.
+
+Common here are MediaPipe, MoveNet and RTMPose.
 
 ## Nobody taught it to wave
 

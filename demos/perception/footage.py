@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from perception import viewer
+from perception import annotate, viewer
 from perception.sources import RealSenseSource, WebcamSource, estimated_intrinsics
 from perception.zeroshot import GroundedSam, GroundingDino
 
@@ -56,6 +56,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=20, help="Stop after this many bag frames")
     parser.add_argument("--prompt", default="person", help="What to find, e.g. \"person. cup. laptop\"")
     parser.add_argument("--mask", action="store_true", help="Also run SAM and overlay masks")
+    parser.add_argument("--out", help="Save an annotated PNG instead of opening Rerun")
     args = parser.parse_args()
 
     if not args.images and not args.bag and args.webcam is None:
@@ -66,17 +67,26 @@ def main() -> None:
 
     source = choose_source(args)
     model = GroundedSam() if args.mask else GroundingDino()
-    viewer.init("footage")
+    if not args.out:
+        viewer.init("footage")
 
     for name, rgb, _intrinsics in source:
-        viewer.log_image(rgb)
         if args.mask:
             detections, segmentation = model.detect_and_segment(rgb, args.prompt)
-            viewer.log_segmentation(segmentation)
         else:
-            detections = model.detect(rgb, args.prompt)
-        viewer.log_detections(detections)
+            detections, segmentation = model.detect(rgb, args.prompt), None
         print(f"{name}: {[f'{d.label} {d.score:.2f}' for d in detections]}")
+
+        if args.out:
+            picture = annotate.draw_masks(rgb, segmentation) if args.mask else rgb
+            annotate.save(annotate.draw_detections(picture, detections), args.out)
+            print(f"saved {args.out}")
+            return
+
+        viewer.log_image(rgb)
+        if segmentation is not None:
+            viewer.log_segmentation(segmentation)
+        viewer.log_detections(detections)
 
 
 if __name__ == "__main__":
