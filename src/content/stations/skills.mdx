@@ -17,16 +17,14 @@ import SkillCatalogue from '@/components/SkillCatalogue.astro'
 
 ## A skill is a function the model may call
 
-```json
-{
-  "name": "wave",
-  "description": "Wave at a person in view. Use when someone greets Marvin.",
-  "kind": "action",
-  "target": "wave"
-}
+```python
+def wave(arm: str = "right", times: int = 1) -> str:
+    """Wave at a person in view. Use when someone greets the robot."""
+    robot.play_action("wave", side=arm, times=times)
+    return "waved"
 ```
 
-The description is the whole interface. It is what the model reads when it decides.
+The docstring is the whole interface. It is what the model reads when it decides.
 
 > **Live demo: fire a skill without the model.** Test `wave` in the panel. Then stand too close and
 > watch the same call get refused.
