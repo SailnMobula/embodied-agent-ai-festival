@@ -1087,12 +1087,14 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-dev = [
-    { name = "pytest" },
-]
 footage = [
     { name = "torch" },
     { name = "transformers" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
 ]
 
 [package.metadata]
@@ -1103,13 +1105,15 @@ requires-dist = [
     { name = "pillow", specifier = ">=10.0" },
     { name = "pyrealsense2", marker = "sys_platform != 'darwin'", specifier = ">=2.55" },
     { name = "pyrealsense2-macosx", marker = "sys_platform == 'darwin'", specifier = ">=2.56" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "rerun-sdk", specifier = "==0.35.0" },
     { name = "torch", marker = "extra == 'footage'", specifier = ">=2.0" },
     { name = "transformers", marker = "extra == 'footage'", specifier = ">=4.44" },
     { name = "ultralytics", specifier = ">=8.3" },
 ]
-provides-extras = ["footage", "dev"]
+provides-extras = ["footage"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=8.0" }]
 
 [[package]]
 name = "pillow"

@@ -72,8 +72,7 @@ Live RealSense is the default (no flag) and works on Linux / the robot, but **no
 high-quality masks from a text prompt — good for slides, too slow for live.
 
 ```bash
-uv sync --extra footage
-uv run footage.py photo.jpg --prompt "person. robot. box."
+uv run --extra footage footage.py photo.jpg --prompt "person. robot. box."
 ```
 
 ## Tests

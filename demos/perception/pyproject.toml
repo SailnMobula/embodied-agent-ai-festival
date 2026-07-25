@@ -16,6 +16,8 @@ dependencies = [
 
 [project.optional-dependencies]
 footage = ["transformers>=4.44", "torch>=2.0"]
+
+[dependency-groups]
 dev = ["pytest>=8.0"]
 
 [tool.uv]
