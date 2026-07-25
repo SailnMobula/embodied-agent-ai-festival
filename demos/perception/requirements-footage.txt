@@ -1,5 +1,0 @@
-# Zero-shot footage only (footage.py). Heavy: first run downloads ~3 GB of weights
-# (GroundingDINO base + SAM ViT-Huge) and runs far slower than realtime. Not needed
-# for the live demos.
-transformers>=4.44
-torch>=2.0

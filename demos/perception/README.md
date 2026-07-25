@@ -17,19 +17,19 @@ Plus `footage.py` for pretty pre-rendered stills (zero-shot, prompt-driven — n
 
 ## Setup
 
-Python **3.12** (PyTorch and MediaPipe have no 3.14 wheels yet).
+Managed with [uv](https://docs.astral.sh/uv/). Python **3.12** is pinned (PyTorch and MediaPipe
+have no 3.14 wheels yet).
 
 ```bash
-python3.12 -m venv .venv
-.venv/bin/pip install -r requirements.txt
+uv sync                       # create the env and install everything
 curl -L -o models/pose_landmarker_lite.task \
   https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task
 ```
 
-The YOLO weights download themselves on first run. Run everything with the venv:
+The YOLO weights download themselves on first run. Run everything with `uv run`:
 
 ```bash
-.venv/bin/python detect.py
+uv run detect.py
 ```
 
 ## Running the camera
@@ -40,22 +40,22 @@ The YOLO weights download themselves on first run. Run everything with the venv:
 **Rehearse on the webcam** — no depth, but detection, segmentation and pose all work:
 
 ```bash
-.venv/bin/python detect.py --webcam 0
-.venv/bin/python pose.py --webcam 0
+uv run detect.py --webcam 0
+uv run pose.py --webcam 0
 ```
 
 **Record once, play back live** — the robust path for `depth.py` and `fuse.py`, which need depth.
 Record a `.bag` with the RealSense tools, then:
 
 ```bash
-.venv/bin/python depth.py --bag scene.bag
-.venv/bin/python fuse.py --bag scene.bag
+uv run depth.py --bag scene.bag
+uv run fuse.py --bag scene.bag
 ```
 
 Live RealSense (when it cooperates) is just the default — no flag:
 
 ```bash
-.venv/bin/python detect.py
+uv run detect.py
 ```
 
 ## Suggested run order on stage
@@ -73,14 +73,14 @@ Live RealSense (when it cooperates) is just the default — no flag:
 high-quality masks from a text prompt — good for slides, too slow for live.
 
 ```bash
-.venv/bin/pip install -r requirements-footage.txt
-.venv/bin/python footage.py photo.jpg --prompt "person. robot. box."
+uv sync --extra footage
+uv run footage.py photo.jpg --prompt "person. robot. box."
 ```
 
 ## Tests
 
 ```bash
-.venv/bin/python -m pytest tests/ -q
+uv run pytest
 ```
 
 `test_wave.py` and `test_geometry.py` cover the pure logic — the wave rule and the pinhole

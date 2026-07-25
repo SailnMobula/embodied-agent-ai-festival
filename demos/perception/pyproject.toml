@@ -1,0 +1,25 @@
+[project]
+name = "perception-demos"
+version = "0.1.0"
+description = "Live RealSense D455 perception demos for the workshop, shown in Rerun"
+requires-python = ">=3.12"
+dependencies = [
+    "rerun-sdk==0.35.0",
+    "numpy>=2.0",
+    "opencv-python>=4.10",
+    "ultralytics>=8.3",
+    "mediapipe>=0.10.14",
+    "pillow>=10.0",
+    "pyrealsense2-macosx>=2.56 ; sys_platform == 'darwin'",
+    "pyrealsense2>=2.55 ; sys_platform != 'darwin'",
+]
+
+[project.optional-dependencies]
+footage = ["transformers>=4.44", "torch>=2.0"]
+dev = ["pytest>=8.0"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
