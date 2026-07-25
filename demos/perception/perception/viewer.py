@@ -46,6 +46,10 @@ def enable_pose_skeleton(keep: tuple[int, ...] | None = None) -> None:
     )
 
 
+def set_frame(index: int) -> None:
+    rr.set_time("frame", sequence=index)
+
+
 def log_camera(intrinsics: Intrinsics) -> None:
     rr.log(
         CAMERA,

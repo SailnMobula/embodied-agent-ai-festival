@@ -44,18 +44,26 @@ uv run detect.py --webcam 0
 uv run pose.py --webcam 0
 ```
 
-**Record once, play back live** — the robust path for `depth.py` and `fuse.py`, which need depth.
-The Python binding segfaults on enumeration on this Mac, but the C tool `rs-record` (from
-`brew install librealsense`) does not. Record a clip, then play it back:
+**Linux / the robot** — live works, and so does record-and-playback:
 
 ```bash
-rs-record -f scene.bag        # Ctrl-C to stop
-uv run depth.py --bag scene.bag
+uv run depth.py                       # live
+uv run depth.py --bag scene.bag       # recorded
 uv run fuse.py --bag scene.bag
 ```
 
-Live RealSense is the default (no flag) and works on Linux / the robot, but **not on this Mac** —
-`pyrealsense2` segfaults enumerating the device. On macOS, use `--webcam` or `--bag`.
+**macOS** — live `pyrealsense2` segfaults on enumeration, and `rs-record` writes a `.db3` the
+older macOS Python binding cannot play back. The route that works: record with the C tool, export
+raw depth frames, view them as a cloud.
+
+```bash
+sudo rs-record -t 15 -f scene.db3               # depth-only clip
+rs-convert -i scene.db3 -f 60 -t 150 -r frames/d   # export raw z16 depth
+uv run depth_raw.py frames/*Depth*.raw           # 3D cloud, coloured by distance
+```
+
+`depth_raw.py` colours the cloud by distance (the recording carries no colour stream). For a full
+RGB-D cloud, record and run on Linux / the robot.
 
 ## Suggested run order on stage
 
