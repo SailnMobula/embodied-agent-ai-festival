@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import AudienceQr from '@/components/AudienceQr.astro'
 import { loadStationsInOrder, startMinuteOf, totalMinutes } from '@/lib/stations'
 import { stationRoute } from '@/lib/routes'
 
@@ -8,7 +9,7 @@ const duration = totalMinutes(stations)
 ---
 
 <BaseLayout
-  title="From Humanoid Robot to Embodied Agent — Workshop"
+  title="From Humanoid Robot to Embodied Agent"
   description="A five-station workshop on how an AI agent controls a real humanoid robot, with live demos on the AgiBot X2 Ultra."
 >
   <div class="mx-auto max-w-5xl px-6 py-20">
@@ -18,9 +19,11 @@ const duration = totalMinutes(stations)
     </h1>
     <p class="mt-6 max-w-3xl text-lead text-muted-foreground text-pretty">
       Today robots are programmed as state machines: every reaction written down in advance. This
-      workshop shows what changes when an AI agent takes the wheel instead — live, on a real AgiBot
+      workshop shows what changes when an AI agent takes the wheel instead, live, on a real AgiBot
       X2 Ultra.
     </p>
+
+    <AudienceQr />
 
     <ol class="mt-16 flex flex-col gap-4">
       {
