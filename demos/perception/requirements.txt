@@ -1,0 +1,14 @@
+# Live perception demos — Python 3.12, macOS Apple Silicon.
+rerun-sdk==0.35.0
+numpy>=2.0
+opencv-python>=4.10
+ultralytics>=8.3
+mediapipe>=0.10.14
+pillow>=10.0
+
+# RealSense D455. The macOS fork imports as pyrealsense2; the mainline wheel is for Linux/Windows.
+pyrealsense2-macosx>=2.56 ; sys_platform == "darwin"
+pyrealsense2>=2.55 ; sys_platform != "darwin"
+
+# Tests.
+pytest>=8.0

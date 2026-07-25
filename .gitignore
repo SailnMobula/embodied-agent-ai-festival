@@ -18,3 +18,14 @@ npm-debug.log*
 
 CLAUDE.md
 docs/DECISIONS.md
+
+# Perception demos (Python)
+demos/perception/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.pt
+*.task
+*.rrd
+*.bag
+
