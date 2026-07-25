@@ -31,4 +31,5 @@ __pycache__/
 *.task
 *.rrd
 *.bag
+*.db3
 
