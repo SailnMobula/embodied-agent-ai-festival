@@ -33,19 +33,19 @@ const bonePath = (from: string, to: string) => {
 
 const outputs = [
   {
-    name: 'Object detection',
-    answer: 'A box and a label.',
-    detail: 'Something is there, and roughly where. Nothing about its shape or posture.',
+    name: 'Detection',
+    answer: 'A box and a label',
+    detail: 'Something is there, and roughly where',
   },
   {
     name: 'Segmentation',
-    answer: 'A pixel-exact outline.',
-    detail: 'Which pixels belong to the person. Useful for grasping and for avoiding obstacles.',
+    answer: 'A pixel-exact outline',
+    detail: 'The precise shape, for grasping or stepping around',
   },
   {
-    name: 'Pose estimation',
-    answer: 'A set of joint coordinates.',
-    detail: 'Where the wrists, elbows and shoulders are. This is what a wave is made of.',
+    name: 'Pose',
+    answer: 'A set of joint coordinates',
+    detail: 'Where the wrists, elbows and shoulders are',
   },
 ]
 ---

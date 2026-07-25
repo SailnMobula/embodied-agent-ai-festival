@@ -1,85 +1,50 @@
 ---
 order: 2
 title: Cameras and perception
-tagline: How raw pixels become "there is a person, and their hand is up".
-takeaway: No model detects waving. Models report coordinates, and a human wrote the rule that turns coordinates into meaning.
+tagline: Turning a grid of pixels into where a person is.
+takeaway: A model reports coordinates. What counts as a wave is a rule a human wrote on top.
 durationMinutes: 10
 ---
 
 import PerceptionOutputs from '@/components/PerceptionOutputs.astro'
 
-## What the X2 Ultra has on board
+## Three answers to one question
 
-- **RGB camera**: colour, rich in detail, flat, no distance
-- **Depth camera**: every pixel also carries how far away it is
-- **Point cloud**: the depth image as a few hundred thousand measured points in 3D
-
-To the robot an image is a grid of numbers. Everything below is about turning that grid into
-something a program can act on.
-
-## Three ways to answer "where?"
+A camera hands the robot a grid of numbers. Perception turns that grid into an answer to one
+question: where is the person? Three models give three answers, each finer than the last.
 
 <PerceptionOutputs />
 
-Same image, same person, three different answers. For a wave, only the third one will do.
+Same frame, three outputs. None of them needs the others. You pick the answer your task needs.
 
-## YOLO, one look is enough
+## A box
 
-Older detectors searched. Slide a window across the image, propose a few thousand regions, run the
-classifier hundreds of times per frame. Accurate, and far too slow for a robot.
+The loosest answer: a rectangle and a label. It says a person is there and roughly where. It runs
+many frames a second, so it keeps up while the robot moves.
 
-YOLO makes one pass. The image becomes a grid, and every cell predicts at the same time: is an
-object centred in me, how big is it, which class is it.
+## An outline
 
-- Dozens of frames per second on hardware that fits inside a robot
-- A little less accurate per frame
-- An answer in 20 milliseconds beats a perfect answer two seconds late
+Tighter: the exact pixels that belong to the person. This is the answer you need to grasp an
+object or to step around it.
 
-> **Live demo: switch to Rerun.** `detect.py` draws boxes around everyone in the room. Then
-> `segment.py`, same question, pixel-exact masks instead of boxes.
+## A skeleton
 
-## MediaPipe, from a box to a skeleton
+The most specific: the position of each joint, shoulders, elbows, wrists. It reads the joints
+straight from the image, so it needs neither the box nor the outline first. A wave lives here, in
+how the wrists move, where a box can never see it.
 
-A box cannot tell you a gesture. Joints can. MediaPipe is Google's toolkit of small models built to
-run on the device rather than in a data centre.
+## Nobody taught it to wave
 
-1. **Detect once**: a light detector finds the person and crops to them
-2. **Then track**: a second model predicts **33 landmarks**, each an x/y coordinate with a rough
-   depth and a confidence
+The skeleton gives coordinates, not meaning. Waving is a rule we wrote on top:
 
-The next frame reuses the previous skeleton instead of detecting again. Detection is expensive,
-tracking is cheap. That is the trick that keeps it realtime.
+- the wrist sits above the shoulder
+- it swings side to side across about a second
 
-MediaPipe returns 33 points with coordinates. It has no concept of "standing", "pointing" or
-"waving".
+Both true at once, and we call it a wave. No model was trained on waving. In Station 4 this rule
+becomes a skill, and in Station 5 the agent decides when to use it.
 
-## So how do we detect a wave?
+## What it gets wrong
 
-We write it ourselves. On top of the skeleton, a wave is geometry over time:
-
-1. Wrist **above the shoulder**, which is two y-coordinates compared
-2. Elbow bent, so the arm is raised rather than pointing
-3. Wrist **moving side to side** across roughly a second
-
-Three conditions true at once and we call it a wave. No network was trained on waving. A person
-decided what a wave looks like as numbers and typed it out.
-
-> **Live demo: wave at the camera.** `pose.py` draws the skeleton and runs exactly that rule. Wave,
-> and the status flips to `WAVE`. Same signal the robot's wave-back reacts to.
-
-## Seeing in three dimensions
-
-> **Live demo: the point cloud.** `depth.py` rebuilds the room as a rotatable cloud of coloured
-> points. Then `fuse.py`: YOLO finds the person on the colour image, the depth camera says how far
-> away they are, and the label floats at that spot in 3D. Colour answers _what_, depth answers
-> _where_.
-
-## Where it breaks
-
-- Backlight and glass surfaces wreck depth measurements
-- A model only recognises what it was trained on, everything else is invisible rather than unknown
-- Landmarks jitter between frames, which is why the wave rule looks at a full second
-- Our rule is a guess about people: a slow wave with a straight arm never registers, and widening
-  the rule starts catching anyone scratching their head
-
-Station 4 turns this into a skill. Station 5 lets the agent decide when to care about it.
+- backlight and glass wreck the measurements
+- a model only sees what it was trained on, everything else is invisible to it
+- the skeleton jitters between frames, so the wave rule watches a full second, not one
