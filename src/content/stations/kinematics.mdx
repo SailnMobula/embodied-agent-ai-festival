@@ -9,9 +9,8 @@ takeaway: Record the angles and you get a wave. Show it a hundred demonstrations
 import JointsAndLinks from '@/components/JointsAndLinks.astro'
 import ForwardKinematicsDemo from '@/components/ForwardKinematicsDemo.tsx'
 import VideoFigure from '@/components/VideoFigure.astro'
-import SlideFigure from '@/components/SlideFigure.astro'
-import imitationLearning from '@/assets/imitation-learning.png'
-import reinforcementLearning from '@/assets/reinforcement-learning.png'
+import ImitationLearning from '@/components/ImitationLearning.astro'
+import LocomotionTraining from '@/components/LocomotionTraining.astro'
 
 ## Same description, you and the robot
 
@@ -55,30 +54,22 @@ Two ways out of this, and the robot uses both.
 
 ## Learning from demonstrations
 
-<SlideFigure
-  src={imitationLearning}
-  alt="Imitation learning: data collection with a VR headset, VLA model training, testing in simulation"
-  caption="Imitation learning, from our own lifting project: collect, train, test."
-/>
+<ImitationLearning />
 
-- A human does the task, over and over, while everything is recorded
-- Cameras, depth, joint positions, all in step
-- The model learns what to do next from what it sees
+- Cameras, depth and joint positions, recorded in step
+- A hundred runs of the same task, done by a person in VR
+- No reward, no rules, only examples
 - Same idea as the recorder above, except it generalises to boxes it never saw
 
-The model in the middle is a **VLA**: vision, language and action in one network.
+The model in the middle is a **VLA**: vision, language and action in one network. We trained one on
+our own lifting data.
 
 ## Learning from reward
 
-<SlideFigure
-  src={reinforcementLearning}
-  alt="Reinforcement learning: thousands of simulated robots on rough terrain, with reward functions listed beside them"
-  caption="Reinforcement learning: no demonstrations, only a score."
-/>
+<LocomotionTraining />
 
 - No data, no demonstrations
 - A reward says what counts: upright, forward, smooth, no crash
-- Thousands of robots try in parallel, day and night
 - Randomised mass, friction, delay and terrain, so the policy survives outside the simulator
 
 Nobody writes a gait. The gait is whatever scores best.

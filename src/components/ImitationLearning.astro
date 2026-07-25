@@ -1,0 +1,133 @@
+---
+const INPUT_LAYER = [30, 45, 60]
+const HIDDEN_LAYER = [24, 39, 54, 69]
+const OUTPUT_LAYER = [38, 55]
+
+const stages = [
+  { name: 'Collect', detail: 'A human does the task a hundred times while everything is recorded' },
+  { name: 'Train', detail: 'The model learns which action follows which observation' },
+  { name: 'Run', detail: 'The policy handles boxes that were never in the recordings' },
+]
+---
+
+<figure class="my-10 grid gap-4 sm:grid-cols-3">
+  {
+    stages.map((stage, index) => (
+      <div class="rounded-card border border-border bg-card p-5">
+        <svg viewBox="0 0 120 90" class="w-full" role="presentation">
+          {index === 0 && (
+            <>
+              <g
+                stroke="var(--color-ex-grey-600)"
+                stroke-width={3.5}
+                stroke-linecap="round"
+                fill="none"
+              >
+                <circle cx={24} cy={22} r={7} fill="var(--color-ex-grey-600)" stroke="none" />
+                <line x1={24} y1={29} x2={24} y2={48} />
+                <line x1={24} y1={34} x2={38} y2={40} />
+                <line x1={24} y1={48} x2={17} y2={64} />
+                <line x1={24} y1={48} x2={31} y2={64} />
+              </g>
+
+              <g
+                stroke="var(--color-ex-grey-600)"
+                stroke-width={5}
+                stroke-linecap="round"
+                fill="none"
+              >
+                <line x1={94} y1={64} x2={94} y2={44} />
+                <line x1={94} y1={44} x2={78} y2={36} />
+              </g>
+              <rect
+                x={84}
+                y={64}
+                width={20}
+                height={7}
+                rx={2}
+                fill="var(--color-ex-grey-200)"
+              />
+
+              <line
+                x1={42}
+                y1={39}
+                x2={74}
+                y2={36}
+                stroke="var(--color-accent)"
+                stroke-width={2}
+                stroke-dasharray="4 4"
+              />
+
+              <g fill="var(--color-ex-grey-200)">
+                <rect x={16} y={76} width={26} height={5} rx={2} />
+                <rect x={46} y={76} width={40} height={5} rx={2} />
+                <rect x={90} y={76} width={14} height={5} rx={2} />
+              </g>
+            </>
+          )}
+
+          {index === 1 && (
+            <>
+              <g stroke="var(--color-border-strong)" stroke-width={1}>
+                {INPUT_LAYER.map((from) =>
+                  HIDDEN_LAYER.map((to) => <line x1={26} y1={from} x2={60} y2={to} />),
+                )}
+                {HIDDEN_LAYER.map((from) =>
+                  OUTPUT_LAYER.map((to) => <line x1={60} y1={from} x2={94} y2={to} />),
+                )}
+              </g>
+              {INPUT_LAYER.map((cy) => (
+                <circle cx={26} cy={cy} r={5} fill="var(--color-ex-grey-600)" />
+              ))}
+              {HIDDEN_LAYER.map((cy) => (
+                <circle cx={60} cy={cy} r={5} fill="var(--color-ex-grey-600)" />
+              ))}
+              {OUTPUT_LAYER.map((cy) => (
+                <circle cx={94} cy={cy} r={5} fill="var(--color-accent)" />
+              ))}
+            </>
+          )}
+
+          {index === 2 && (
+            <>
+              <line
+                x1={16}
+                y1={72}
+                x2={104}
+                y2={72}
+                stroke="var(--color-border-strong)"
+                stroke-width={2}
+                stroke-dasharray="6 8"
+              />
+              <g
+                transform="translate(48 72)"
+                stroke="var(--color-ex-grey-600)"
+                stroke-width={4}
+                stroke-linecap="round"
+                fill="none"
+              >
+                <circle cx={0} cy={-46} r={6} fill="var(--color-ex-grey-600)" stroke="none" />
+                <line x1={0} y1={-40} x2={0} y2={-22} />
+                <line x1={0} y1={-36} x2={16} y2={-30} />
+                <line x1={0} y1={-36} x2={-9} y2={-26} />
+                <line x1={0} y1={-22} x2={-6} y2={0} />
+                <line x1={0} y1={-22} x2={6} y2={0} />
+              </g>
+              <rect
+                x={64}
+                y={34}
+                width={22}
+                height={18}
+                rx={2}
+                fill="var(--color-accent)"
+              />
+            </>
+          )}
+        </svg>
+
+        <p class="mt-4 font-bold text-card-foreground">{stage.name}</p>
+        <p class="mt-2 text-sm text-muted-foreground">{stage.detail}</p>
+      </div>
+    ))
+  }
+</figure>
