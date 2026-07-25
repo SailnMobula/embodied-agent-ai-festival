@@ -45,7 +45,9 @@ That change is what made realtime detection possible — dozens of frames per se
 you can put inside a robot. Accuracy per frame is somewhat lower than the slow methods, but a
 robot that answers in 20 milliseconds beats one that answers perfectly two seconds too late.
 
-> Live demo: YOLO detection running in a dora-rs pipeline.
+> **Live demo — switch to Rerun.** `detect.py` runs YOLO on the RealSense feed: boxes around
+> everyone in the room, dozens of frames a second. Then `segment.py` — same idea, but pixel-exact
+> masks instead of boxes. Same "where?", two different answers.
 
 ## MediaPipe — from a box to a skeleton
 
@@ -85,6 +87,20 @@ This is exactly the pattern from Station 1, one level down. The model supplies r
 human supplies the meaning. In Station 4 this becomes a **skill** the robot can offer, and in
 Station 5 the agent gets to decide *when* to care about it — but nobody, at any point, taught an AI
 what waving is.
+
+> **Live demo — wave at the camera.** `pose.py` draws the skeleton and runs exactly the rule
+> above. Wave, and the status flips to `WAVE`. This is the same signal the robot's wave-back
+> reacts to.
+
+## Seeing in three dimensions
+
+The demos so far all drew on the flat colour image. But the depth camera turns every pixel into a
+point in space, and that is closer to how the robot actually perceives a room.
+
+> **Live demo — the point cloud.** `depth.py` rebuilds the room as a rotatable cloud of coloured
+> points. Then `fuse.py` puts the two together: YOLO finds a person on the colour image, the depth
+> camera says how far away they are, and a label floats in the 3D cloud at exactly their position.
+> Colour answers *what*, depth answers *where* — fused into one picture.
 
 ## Where it breaks
 
