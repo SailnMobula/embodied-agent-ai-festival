@@ -74,9 +74,13 @@ you want with a text prompt and get high-quality masks. Too slow for live, so ru
 on a recorded `.bag` — good for slides.
 
 ```bash
+uv run --extra footage footage.py --webcam 0 --prompt "person. laptop. cup."
 uv run --extra footage footage.py photo.jpg --prompt "person. robot. box."
 uv run --extra footage footage.py --bag scene.bag --stride 15 --limit 20 --prompt "person."
 ```
+
+`--webcam 0` grabs a single frame from the camera and prompts it — the "point, snap, name it"
+flow. Add `--shots 3` for a few frames.
 
 Prompts are lowercase phrases, each ending in a period. Weights (~3 GB) download on first use;
 they are shared with `projects/rausch` if you have run that.
