@@ -1,68 +1,32 @@
 ---
 order: 4
 title: Skills
-tagline: What this robot can actually be asked to do, one ability at a time.
+tagline: The robot's abilities, one at a time, before the agent gets to use them.
 durationMinutes: 10
-takeaway: A skill is a name, a description and a robot capability behind it. The model reads the description and never touches a motor.
+takeaway: A skill is a name and a description. The model reads the description and never touches a motor.
 ---
 
 import SkillCatalogue from '@/components/SkillCatalogue.astro'
 
+## What the robot can be asked to do
+
+<SkillCatalogue />
+
+- No walking. The robot acts where it stands
+- Moves pass a LiDAR check first, and a blocked move answers `ok: false`
+
 ## A skill is a function the model may call
-
-Four fields, and the second one does the real work:
-
-- **name**, lowercase with underscores, because it becomes a function name
-- **description**, the sentence that tells the model when to reach for it
-- **kind**, which robot capability it binds to
-- **target**, the concrete gesture, face, sound or sector
 
 ```json
 {
   "name": "wave",
   "description": "Wave at a person in view. Use when someone greets Marvin.",
   "kind": "action",
-  "target": "wave",
-  "side_param": true,
-  "repeat": true,
-  "timeout_ms": 0,
-  "security_gate": "lidar"
+  "target": "wave"
 }
 ```
 
-The description is not documentation for us. It is the only thing the model reads when it decides.
+The description is the whole interface. It is what the model reads when it decides.
 
-## What the X2 exposes
-
-<SkillCatalogue />
-
-- `action` fires a gesture, a face and a sound together, so `wave` is one call, not three
-- `timeout_ms: 0` means fire and forget: the tool returns at once and the arm keeps moving
-- `side_param` lets the model pick the arm, `repeat` lets it wave up to three times in one call
-
-## The gate sits under every move
-
-Nothing that moves the body goes out unchecked. The LiDAR reports clearance per sector, and a
-blocked move comes back as `ok: false` with HTTP 200, because a refusal is an answer, not a crash.
-
-- Blocked moves used to fail silently, so a child waved and the robot did nothing
-- Now the robot plays `no_space` instead: a face and a sound, deliberately no gesture
-- Dropping the gesture is the point, since it would walk straight back into the gate that just
-  refused one
-
-> **Live demo: fire a skill without the model.** X2 Ops, Skills panel, Test. Stand clear and the
-> wave plays. Step into the front sector and the same call answers `ok: false`.
-
-## What it cannot do
-
-Worth saying plainly, because the room will assume otherwise:
-
-- **No walking to a target.** No skill exposes it, and the joint write path is still behind the
-  safety review
-- **Small movements** are an idle fidget inside a 50 by 50 cm box, armed by an operator who
-  confirmed the space behind the robot, six steps and it disarms itself
-- **No odometry.** The robot never measures where it stands, it only adds up the steps it commanded
-- **One speaker.** Hand it to the vendor app and the robot goes silent, stops listening and stops
-  gesturing
-
-Station 5 hands this catalogue to a model and lets it choose.
+> **Live demo: fire a skill without the model.** Test `wave` in the panel. Then stand too close and
+> watch the same call get refused.

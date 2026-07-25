@@ -1,69 +1,38 @@
 ---
 order: 5
 title: The agent
-tagline: A prompt, a voice and a list of skills, assembled live, against the same task we drew as a state machine in Station 1.
+tagline: A prompt, a voice and a list of skills, assembled live.
 durationMinutes: 20
-takeaway: The agent is a saved configuration, not a program. Nobody wrote down when to wave.
+takeaway: The same task, without a single branch written in advance. That is the whole difference.
 ---
 
 import AgentPipeline from '@/components/AgentPipeline.astro'
 import StateMachineDemo from '@/components/StateMachineDemo.tsx'
 
-## An agent here is a configuration
+## What we plug together
 
-Seven fields, saved under a name, activated with one click:
-
-- **persona**, who the robot is, which language, how long the answers run
-- **event**, where it stands today, opening hours, what to recommend to a child
-- **self**, its body, its senses, its limits
-- **voice**, **skills**, **start action**, **end action**
-
-The three prompt blocks and the tool list are composed into one system prompt. The tool list is not
-editable by hand: it is generated from the skills that are ticked.
+- **Prompt**: who the robot is, where it stands, what it must never do
+- **Skills**: the list from Station 4, handed over as functions
+- **Voice**: the model listens and answers continuously
 
 ## The path a sentence takes
 
 <AgentPipeline />
 
-1. Speech goes to the model directly, with no transcription step of our own
-2. The model answers, calls a skill, or does both
-3. The skill call reaches the robot, which dispatches the motion
-4. The gate allows it or refuses it
-5. The outcome goes back into the conversation, and the robot says what happened in its own words
+Nowhere in there is a list of situations. The model decides.
 
-Step 2 is the entire difference. Nowhere is there a list of situations.
-
-## Activating an agent has three clocks
-
-- **Prompt and tools** land on the running session, mid conversation
-- **Voice, start action and end action** wait for the next session
-- **`default`** is the builtin agent and cannot be edited, which makes it the way back when an event
-  goes sideways
-
-Every override is runtime only. Restart the robot's realtime service and the baseline from `.env`
-returns, which is deliberate: a bad edit cannot survive the day.
-
-> **Live demo: build the agent on stage.** Write the event block, tick `wave`, `detect_people` and
-> `set_face`, activate, then talk to it.
+> **Live demo: build the agent on stage.** Write the prompt, tick three skills, activate, talk to
+> it.
 
 ## The same task, the old way
 
 <StateMachineDemo client:visible />
 
-Both do the job. Now ask for three more things:
-
-- Greet people by name
-- Ignore anyone already walking away
-- Answer in English when the question came in English
-
-On the agent side that is a sentence in the persona block. On the state machine side it is a
-redesign.
+Now ask for one more thing, like greeting people by name. On the agent side that is a sentence. On
+this side it is a redesign.
 
 ## What still does not work
 
-- The robot cannot walk to anyone, so every interaction happens where it stands
-- A refused move is invisible unless `no_space` is configured, and its sound file is still missing
-- Camera reads cost about three seconds, which is a long pause in a conversation
-- The model is far too slow for balance, which stays in the low-level controller and is not up for
-  discussion
-- The same situation twice does not guarantee the same decision
+- It calls skills in situations they were never built for
+- It cannot do anything no skill exposes
+- The same situation twice can end differently
