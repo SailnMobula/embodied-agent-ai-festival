@@ -1,0 +1,131 @@
+---
+const SHOULDER = { x: 46, y: 92 }
+const ELBOW = { x: 74, y: 66 }
+const HANDS = [
+  { x: 56, y: 45 },
+  { x: 72, y: 38 },
+  { x: 88, y: 42 },
+]
+
+const GROUND = 104
+const TILTS = [-22, -13, 11, 21]
+---
+
+<figure class="my-10 grid gap-4 sm:grid-cols-2">
+  <div class="rounded-card border border-border bg-card p-5">
+    <svg viewBox="0 0 180 120" class="w-full" role="presentation">
+      <line
+        x1={SHOULDER.x}
+        y1={SHOULDER.y}
+        x2={SHOULDER.x}
+        y2={GROUND + 12}
+        stroke="var(--color-ex-grey-600)"
+        stroke-width={7}
+        stroke-linecap="round"
+      />
+
+      <g stroke="var(--color-border-strong)" stroke-width={6} stroke-linecap="round" fill="none">
+        {
+          [HANDS[0], HANDS[2]].map((hand) => (
+            <>
+              <line x1={SHOULDER.x} y1={SHOULDER.y} x2={ELBOW.x} y2={ELBOW.y} />
+              <line x1={ELBOW.x} y1={ELBOW.y} x2={hand.x} y2={hand.y} />
+            </>
+          ))
+        }
+      </g>
+
+      <g stroke="var(--color-ex-grey-600)" stroke-width={6} stroke-linecap="round" fill="none">
+        <line x1={SHOULDER.x} y1={SHOULDER.y} x2={ELBOW.x} y2={ELBOW.y} />
+        <line x1={ELBOW.x} y1={ELBOW.y} x2={HANDS[1].x} y2={HANDS[1].y} />
+      </g>
+
+      <path
+        d={`M ${HANDS[0].x} ${HANDS[0].y} Q ${HANDS[1].x} 32 ${HANDS[2].x} ${HANDS[2].y}`}
+        fill="none"
+        stroke="var(--color-accent)"
+        stroke-width={2}
+        stroke-dasharray="4 4"
+      />
+      {HANDS.map((hand) => <circle cx={hand.x} cy={hand.y} r={3.5} fill="var(--color-accent)" />)}
+
+      <g font-family="var(--font-mono)" font-size={7} fill="var(--color-ex-grey-600)">
+        <text x={116} y={44}>t = 0.0</text>
+        <text x={116} y={58}>t = 0.4</text>
+        <text x={116} y={72}>t = 0.8</text>
+      </g>
+    </svg>
+
+    <p class="mt-4 font-bold text-card-foreground">Teaching</p>
+    <p class="mt-1 text-sm font-bold text-muted-foreground">Record the motion once.</p>
+    <p class="mt-2 text-sm text-muted-foreground">
+      Guide the arm through the gesture, save the joint angles with their timestamps, replay the
+      file. Identical every single time — and identical is exactly the point.
+    </p>
+    <p class="mt-3 font-mono text-xs text-muted-foreground">wave.json · 43 rows of angles</p>
+  </div>
+
+  <div class="rounded-card border border-border bg-card p-5">
+    <svg viewBox="0 0 180 120" class="w-full" role="presentation">
+      <line
+        x1={16}
+        y1={GROUND}
+        x2={164}
+        y2={GROUND}
+        stroke="var(--color-border-strong)"
+        stroke-width={2}
+        stroke-dasharray="6 8"
+      />
+
+      {
+        TILTS.map((tilt) => (
+          <g
+            transform={`translate(90 ${GROUND}) rotate(${tilt})`}
+            stroke="var(--color-border-strong)"
+            stroke-width={4}
+            stroke-linecap="round"
+            fill="none"
+          >
+            <circle cx={0} cy={-46} r={6} fill="var(--color-border-strong)" stroke="none" />
+            <line x1={0} y1={-40} x2={0} y2={-22} />
+            <line x1={0} y1={-36} x2={-9} y2={-26} />
+            <line x1={0} y1={-36} x2={9} y2={-26} />
+            <line x1={0} y1={-22} x2={-6} y2={0} />
+            <line x1={0} y1={-22} x2={6} y2={0} />
+          </g>
+        ))
+      }
+
+      <g
+        transform={`translate(90 ${GROUND})`}
+        stroke="var(--color-ex-grey-600)"
+        stroke-width={4}
+        stroke-linecap="round"
+        fill="none"
+      >
+        <circle cx={0} cy={-46} r={6} fill="var(--color-ex-grey-600)" stroke="none" />
+        <line x1={0} y1={-40} x2={0} y2={-22} />
+        <line x1={0} y1={-36} x2={-9} y2={-26} />
+        <line x1={0} y1={-36} x2={9} y2={-26} />
+        <line x1={0} y1={-22} x2={-6} y2={0} />
+        <line x1={0} y1={-22} x2={6} y2={0} />
+      </g>
+
+      <path
+        d="M 46 58 A 44 44 0 0 1 134 58"
+        fill="none"
+        stroke="var(--color-accent)"
+        stroke-width={2}
+      />
+      <polygon points="130,50 138,50 134,61" fill="var(--color-accent)" />
+    </svg>
+
+    <p class="mt-4 font-bold text-card-foreground">Training</p>
+    <p class="mt-1 text-sm font-bold text-muted-foreground">Reward the behaviour, keep the policy.</p>
+    <p class="mt-2 text-sm text-muted-foreground">
+      Thousands of simulated robots try, fall, and get scored on staying upright. What survives is
+      not a path but a reflex: sensor readings in, joint targets out, fifty times a second.
+    </p>
+    <p class="mt-3 font-mono text-xs text-muted-foreground">4096 robots in sim · one policy out</p>
+  </div>
+</figure>
