@@ -33,3 +33,7 @@ __pycache__/
 *.bag
 *.db3
 
+
+.obsidian/
+preflight_out/
+.claude/
