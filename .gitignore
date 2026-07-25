@@ -19,6 +19,9 @@ npm-debug.log*
 CLAUDE.md
 docs/DECISIONS.md
 
+# Raw material dropped in for a session, never shipped
+user-input/
+
 # Perception demos (Python)
 demos/perception/.venv/
 __pycache__/
