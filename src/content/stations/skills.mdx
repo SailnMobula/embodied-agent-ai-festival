@@ -26,12 +26,21 @@ def wave(arm: str = "right", times: int = 1) -> str:
 
 The docstring is the whole interface. It is what the model reads when it decides.
 
-**Function calling** is the mechanism underneath. The model moves nothing itself. It emits a call
-with the values it picked, and our software runs the function:
+**Function calling** is the mechanism underneath. The model never sees the code, only this:
 
 ```json
-{ "name": "wave", "arguments": { "arm": "right", "times": 2 } }
+{
+  "name": "wave",
+  "description": "Wave at a person in view. Use when someone greets the robot.",
+  "parameters": {
+    "arm": { "type": "string", "enum": ["left", "right"], "default": "right" },
+    "times": { "type": "integer", "minimum": 1, "maximum": 3, "default": 1 }
+  }
+}
 ```
+
+Same name, same two parameters. The model picks the values and emits
+`{"name": "wave", "arguments": {"arm": "right", "times": 2}}`, and our software runs the function.
 
 > **Live demo: fire a skill without the model.** Test `wave` in the panel. Then stand too close and
 > watch the same call get refused.
