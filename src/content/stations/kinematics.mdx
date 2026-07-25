@@ -2,58 +2,93 @@
 order: 3
 title: Joints, angles, motion
 tagline: Every movement a robot makes is a list of angles. The only question is who writes the list.
-durationMinutes: 8
-takeaway: Record the angles and you get a wave. Reward the behaviour and you get walking. Both arrive at the motors as numbers.
+durationMinutes: 10
+takeaway: Record the angles and you get a wave. Show it a hundred demonstrations or pay it a reward, and you get a policy.
 ---
 
 import JointsAndLinks from '@/components/JointsAndLinks.astro'
 import ForwardKinematicsDemo from '@/components/ForwardKinematicsDemo.tsx'
-import LocomotionTraining from '@/components/LocomotionTraining.astro'
+import VideoFigure from '@/components/VideoFigure.astro'
+import SlideFigure from '@/components/SlideFigure.astro'
+import imitationLearning from '@/assets/imitation-learning.png'
+import reinforcementLearning from '@/assets/reinforcement-learning.png'
 
 ## Same description, you and the robot
 
 <JointsAndLinks />
 
-- **Joint** — a place that turns.
-- **Link** — the rigid piece between two joints. Your bones.
-- **Angle** — how far a joint is turned.
+- **Joint**: a place that turns
+- **Link**: the rigid piece between two joints, your bones
+- **Angle**: how far a joint is turned
 
 ## Angles in, position out
 
 <ForwardKinematicsDemo client:visible />
 
-- Pure geometry. No AI. This is **forward kinematics**.
-- The last point is the **end effector** — the hand.
-- Every joint drags everything after it.
-- A degree at the shoulder moves the hand further than a degree at the wrist.
+- Pure geometry, no AI: **forward kinematics**
+- The last point is the **end effector**, the hand
+- Every joint drags everything after it
+- A degree at the shoulder moves the hand further than a degree at the wrist
 
 ## Teaching is recording
 
 Press **Record**, move the sliders, press **Replay**.
 
-- A taught motion is angles plus timestamps.
-- Replay is exact. Every time.
-- It looks at nothing. It reacts to nothing.
+- Angles plus timestamps, nothing else
+- Replay is exact, every time
+- It looks at nothing and reacts to nothing
 
-> **Live demo — the robot waves.** Same trick, real hardware: a file of joint angles, played back.
-> Run it twice, it is identical to the degree.
+> **Live demo: the robot waves.** A file of joint angles, played back on real hardware. Run it
+> twice and it is identical to the degree.
 
-## Training is not a list
+## Walking cannot be recorded
 
 Balance is a reaction. No file answers a shove.
 
-<LocomotionTraining />
+<VideoFigure
+  src="g1-velocity-training.mp4"
+  poster="g1-velocity-training-poster.jpg"
+  caption="Hundreds of humanoids learning to walk in simulation. Blue is the commanded direction, green is what the robot actually did."
+/>
 
-- Reward: upright, moving forward. Penalty: falling, flailing, burning current.
-- Nobody writes a gait.
-- Vary mass, friction, delay, terrain — then move it to real hardware. That gap is **sim-to-real**.
+Two ways out of this, and the robot uses both.
+
+## Learning from demonstrations
+
+<SlideFigure
+  src={imitationLearning}
+  alt="Imitation learning: data collection with a VR headset, VLA model training, testing in simulation"
+  caption="Imitation learning, from our own lifting project: collect, train, test."
+/>
+
+- A human does the task, over and over, while everything is recorded
+- Cameras, depth, joint positions, all in step
+- The model learns what to do next from what it sees
+- Same idea as the recorder above, except it generalises to boxes it never saw
+
+The model in the middle is a **VLA**: vision, language and action in one network.
+
+## Learning from reward
+
+<SlideFigure
+  src={reinforcementLearning}
+  alt="Reinforcement learning: thousands of simulated robots on rough terrain, with reward functions listed beside them"
+  caption="Reinforcement learning: no demonstrations, only a score."
+/>
+
+- No data, no demonstrations
+- A reward says what counts: upright, forward, smooth, no crash
+- Thousands of robots try in parallel, day and night
+- Randomised mass, friction, delay and terrain, so the policy survives outside the simulator
+
+Nobody writes a gait. The gait is whatever scores best.
 
 Out comes a **policy**: sensors in, joint targets out, fifty times a second. Ask why it moved that
-ankle — there is no answer to read.
+ankle and there is no answer to read.
 
 ## On this robot
 
-- **Wave** — taught. A recording.
-- **Stand, balance, walk** — trained. A policy.
+- **Wave**: taught, a recording
+- **Stand, balance, walk**: trained, a policy
 
-Station 5: the agent calls both, and cannot tell which is which.
+Station 5: the agent calls both and cannot tell which is which.

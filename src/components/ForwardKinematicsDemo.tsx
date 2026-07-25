@@ -152,8 +152,8 @@ function RecorderControls({
         {mode === 'replaying' && 'replaying…'}
         {mode === 'idle' &&
           (recording.length < 2
-            ? 'wave.json — empty'
-            : `wave.json — ${recording.length} frames · ${seconds} s`)}
+            ? 'wave.json, empty'
+            : `wave.json, ${recording.length} frames · ${seconds} s`)}
       </p>
     </div>
   )

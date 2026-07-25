@@ -39,17 +39,24 @@ const { order, title, tagline, durationMinutes, takeaway } = station.data
 
 <style is:global>
   .station-content > * + * {
-    margin-block-start: 1.3em;
+    margin-block-start: 1.4em;
   }
   .station-content h2 {
+    border-block-start: 1px solid var(--color-border);
     color: var(--color-foreground);
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 1.75em;
     letter-spacing: -1px;
     line-height: 1.2;
-    margin-block-start: 2.2em;
+    margin-block-start: 4.5em;
+    padding-block-start: 2.2em;
     text-wrap: balance;
+  }
+  .station-content h2:first-child {
+    border-block-start: none;
+    margin-block-start: 0;
+    padding-block-start: 0;
   }
   .station-content h3 {
     color: var(--color-foreground);
