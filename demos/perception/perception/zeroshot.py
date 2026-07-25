@@ -15,35 +15,32 @@ def _device() -> str:
     return "mps" if torch.backends.mps.is_available() else "cpu"
 
 
-class GroundedSam:
+def _normalize_prompt(prompt: str) -> str:
+    return prompt if prompt.strip().endswith(".") else f"{prompt.strip()}."
+
+
+class GroundingDino:
     def __init__(self, box_threshold: float = 0.3, text_threshold: float = 0.25):
         import torch
-        from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor, SamModel, SamProcessor
+        from transformers import AutoModelForZeroShotObjectDetection, AutoProcessor
 
         self._torch = torch
         self._device = _device()
         self._box_threshold = box_threshold
         self._text_threshold = text_threshold
 
-        self._dino_processor = AutoProcessor.from_pretrained(DINO_MODEL)
-        self._dino = AutoModelForZeroShotObjectDetection.from_pretrained(DINO_MODEL).to(self._device).eval()
-        self._sam_processor = SamProcessor.from_pretrained(SAM_MODEL)
-        self._sam = SamModel.from_pretrained(SAM_MODEL).to(self._device).eval()
+        self._processor = AutoProcessor.from_pretrained(DINO_MODEL)
+        self._model = AutoModelForZeroShotObjectDetection.from_pretrained(DINO_MODEL).to(self._device).eval()
 
-    def detect_and_segment(self, rgb: np.ndarray, prompt: str) -> tuple[list[Detection], Segmentation]:
+    def detect(self, rgb: np.ndarray, prompt: str) -> list[Detection]:
         from PIL import Image
 
         image = Image.fromarray(rgb)
-        detections = self._detect(image, prompt)
-        segmentation = self._segment(image, rgb.shape[:2], detections)
-        return detections, segmentation
-
-    def _detect(self, image, prompt: str) -> list[Detection]:
-        inputs = self._dino_processor(images=image, text=prompt, return_tensors="pt").to(self._device)
+        inputs = self._processor(images=image, text=_normalize_prompt(prompt), return_tensors="pt").to(self._device)
         with self._torch.no_grad():
-            outputs = self._dino(**inputs)
+            outputs = self._model(**inputs)
 
-        result = self._dino_processor.post_process_grounded_object_detection(
+        result = self._processor.post_process_grounded_object_detection(
             outputs,
             inputs["input_ids"],
             threshold=self._box_threshold,
@@ -58,6 +55,25 @@ class GroundedSam:
                 Detection(x=x1, y=y1, width=x2 - x1, height=y2 - y1, label=label, score=float(score))
             )
         return detections
+
+
+class GroundedSam:
+    def __init__(self, box_threshold: float = 0.3, text_threshold: float = 0.25):
+        import torch
+        from transformers import SamModel, SamProcessor
+
+        self._torch = torch
+        self._device = _device()
+        self._dino = GroundingDino(box_threshold, text_threshold)
+        self._sam_processor = SamProcessor.from_pretrained(SAM_MODEL)
+        self._sam = SamModel.from_pretrained(SAM_MODEL).to(self._device).eval()
+
+    def detect_and_segment(self, rgb: np.ndarray, prompt: str) -> tuple[list[Detection], Segmentation]:
+        from PIL import Image
+
+        detections = self._dino.detect(rgb, prompt)
+        segmentation = self._segment(Image.fromarray(rgb), rgb.shape[:2], detections)
+        return detections, segmentation
 
     def _segment(self, image, shape: tuple[int, int], detections: list[Detection]) -> Segmentation:
         height, width = shape

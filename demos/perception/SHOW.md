@@ -24,13 +24,13 @@ Live boxes around people, dozens of frames a second. Stand in view, move around,
 ## 2. Detection — GroundingDINO, snap a photo and prompt it
 
 ```bash
-uv run --extra footage footage.py --webcam 0 --prompt "person. laptop. cup. bottle. chair."
+uv run --extra footage footage.py --webcam 0 --prompt "person. laptop. cup. bottle"
 ```
 
-Grabs one frame from the webcam and runs the text prompt over it: boxes plus masks for whatever you
-named. Edit the prompt to name anything in the room (lowercase, each phrase ends in a period).
-"Instead of a fixed list of classes, I ask for what I want in words." Runs in a few seconds, not
-realtime — that is why it takes a single photo.
+Grabs one frame from the webcam and draws boxes for whatever you named in the prompt. Edit the
+prompt to name anything in the room, separated by periods. "Instead of a fixed list of classes, I
+ask for what I want in words." Runs in a few seconds, not realtime, so it takes a single photo.
+Opens just the picture with boxes, no 3D view. Add `--mask` if you ever want SAM outlines too.
 
 ## 3. Segmentation — YOLO-seg, live
 

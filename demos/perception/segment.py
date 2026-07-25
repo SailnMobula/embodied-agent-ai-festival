@@ -16,7 +16,6 @@ def main() -> None:
 
     with build_source(args) as source:
         for frame in source.frames():
-            viewer.log_camera(frame.intrinsics)
             viewer.log_image(frame.color_rgb)
             viewer.log_segmentation(segmenter.segment(frame.color_rgb))
 

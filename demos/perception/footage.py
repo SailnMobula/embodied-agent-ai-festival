@@ -6,7 +6,7 @@ from PIL import Image
 
 from perception import viewer
 from perception.sources import RealSenseSource, WebcamSource, estimated_intrinsics
-from perception.zeroshot import GroundedSam
+from perception.zeroshot import GroundedSam, GroundingDino
 
 
 def frames_from_images(paths):
@@ -54,7 +54,8 @@ def main() -> None:
     parser.add_argument("--bag", help="A recorded RealSense .bag to sample frames from")
     parser.add_argument("--stride", type=int, default=15, help="Sample every Nth bag frame")
     parser.add_argument("--limit", type=int, default=20, help="Stop after this many bag frames")
-    parser.add_argument("--prompt", default="person.", help="Lowercase phrases, each ending in a period")
+    parser.add_argument("--prompt", default="person", help="What to find, e.g. \"person. cup. laptop\"")
+    parser.add_argument("--mask", action="store_true", help="Also run SAM and overlay masks")
     args = parser.parse_args()
 
     if not args.images and not args.bag and args.webcam is None:
@@ -64,18 +65,18 @@ def main() -> None:
         parser.error(f"no such image file(s): {', '.join(missing)}")
 
     source = choose_source(args)
-
-    model = GroundedSam()
+    model = GroundedSam() if args.mask else GroundingDino()
     viewer.init("footage")
 
-    for name, rgb, intrinsics in source:
-        detections, segmentation = model.detect_and_segment(rgb, args.prompt)
-        print(f"{name}: {[f'{d.label} {d.score:.2f}' for d in detections]}")
-
-        viewer.log_camera(intrinsics)
+    for name, rgb, _intrinsics in source:
         viewer.log_image(rgb)
+        if args.mask:
+            detections, segmentation = model.detect_and_segment(rgb, args.prompt)
+            viewer.log_segmentation(segmentation)
+        else:
+            detections = model.detect(rgb, args.prompt)
         viewer.log_detections(detections)
-        viewer.log_segmentation(segmentation)
+        print(f"{name}: {[f'{d.label} {d.score:.2f}' for d in detections]}")
 
 
 if __name__ == "__main__":
