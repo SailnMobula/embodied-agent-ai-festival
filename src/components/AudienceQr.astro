@@ -3,12 +3,12 @@ const url = 'https://sailnmobula.github.io/embodied-agent-ai-festival/'
 const label = 'sailnmobula.github.io/embodied-agent-ai-festival'
 ---
 
-<aside class="mt-14 flex flex-col items-center gap-6 rounded-card border border-border bg-card p-6 sm:flex-row sm:p-8">
-  <a href={url} class="shrink-0 rounded-container bg-white p-3">
+<aside class="mt-14 flex flex-col items-center gap-6 rounded-card border border-border bg-card p-8 text-center sm:p-10">
+  <a href={url} class="rounded-container bg-white p-4">
     <svg
       viewBox="0 0 41 41"
       shape-rendering="crispEdges"
-      class="h-44 w-44"
+      class="h-72 w-72 sm:h-80 sm:w-80"
       role="img"
       aria-label="QR code linking to the workshop site"
     >
@@ -19,9 +19,6 @@ const label = 'sailnmobula.github.io/embodied-agent-ai-festival'
 
   <div>
     <p class="text-lead font-bold text-card-foreground">Scan to follow along</p>
-    <p class="mt-2 text-muted-foreground text-pretty">
-      Every station, every demo and every diagram stays online after the workshop.
-    </p>
-    <p class="mt-3 font-mono text-sm break-all text-muted-foreground">{label}</p>
+    <p class="mt-2 font-mono text-sm break-all text-muted-foreground">{label}</p>
   </div>
 </aside>
