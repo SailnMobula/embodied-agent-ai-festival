@@ -22,6 +22,10 @@ Same frame, three outputs. None of them needs the others. You pick the answer yo
 
 ![A detector asked for a cup, drawing a box around it](../../assets/perception/detection.png)
 
+```bash
+uv run --extra footage footage.py --webcam 0 --prompt "cup"
+```
+
 The loosest answer: a rectangle and a label. Here the model was asked for a cup and boxed it. That
 is enough to know the object is there and roughly where. It runs many frames a second, so it keeps
 up while the robot moves.
@@ -32,6 +36,10 @@ Common detectors are YOLO, RT-DETR and Grounding DINO.
 
 ![SAM tracing the exact pixels of the same cup](../../assets/perception/segmentation.png)
 
+```bash
+uv run --extra footage footage.py --webcam 0 --prompt "cup" --mask
+```
+
 Tighter: the exact pixels of the object. SAM traced the cup, handle and all. This is the answer you
 need to grasp it or to step around it.
 
@@ -40,6 +48,10 @@ Common here are YOLO for fast masks and Segment Anything for precise ones.
 ## A skeleton
 
 ![A hand tracked down to the five fingers](../../assets/perception/skeleton.jpg)
+
+```bash
+uv run hand.py --webcam 0
+```
 
 The most specific: the position of each joint. It reads the joints straight from the image, so it
 needs neither the box nor the outline first. A wave lives here, in how the wrists move, where a box
