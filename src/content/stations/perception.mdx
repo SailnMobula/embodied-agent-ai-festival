@@ -2,115 +2,84 @@
 order: 2
 title: Cameras and perception
 tagline: How raw pixels become "there is a person, and their hand is up".
+takeaway: No model detects waving. Models report coordinates, and a human wrote the rule that turns coordinates into meaning.
 durationMinutes: 10
-takeaway: No model detects waving. Models report coordinates — a human wrote the rule that turns coordinates into meaning.
 ---
 
 import PerceptionOutputs from '@/components/PerceptionOutputs.astro'
 
 ## What the X2 Ultra has on board
 
-- **RGB cameras** — ordinary colour images. Rich in detail, but flat: they carry no distance.
-- **Depth cameras** — every pixel additionally carries "how far away". This is what makes stepping
-  over an obstacle possible instead of walking into it.
-- **Point clouds** — the depth image turned into a cloud of measured points in 3D space. Not a
-  smooth model of the room, just a few hundred thousand dots the sensor was able to hit.
+- **RGB camera**: colour, rich in detail, flat, no distance
+- **Depth camera**: every pixel also carries how far away it is
+- **Point cloud**: the depth image as a few hundred thousand measured points in 3D
 
-A camera image on its own means nothing to a robot. It is a grid of numbers. Everything that
-follows is about turning that grid into something a program can act on.
+To the robot an image is a grid of numbers. Everything below is about turning that grid into
+something a program can act on.
 
 ## Three ways to answer "where?"
 
-Computer vision is not one task. Ask a model where the person is and you get a different kind of
-answer depending on what it was built for.
-
 <PerceptionOutputs />
 
-Same image, same person, three different outputs. Which one you need depends entirely on what you
-plan to do next — and for a wave, only the third one will do.
+Same image, same person, three different answers. For a wave, only the third one will do.
 
-## YOLO — one look is enough
+## YOLO, one look is enough
 
-**YOLO** stands for *You Only Look Once*, and the name is the whole idea.
-
-Older detectors worked by searching. They slid a window across the image, or proposed a few
-thousand candidate regions, and asked "is it here? is it here? is it here?" — running the
+Older detectors searched. Slide a window across the image, propose a few thousand regions, run the
 classifier hundreds of times per frame. Accurate, and far too slow for a robot.
 
-YOLO turns detection into a single pass. The image is divided into a grid, and in **one** run
-through the network every cell simultaneously predicts: is the centre of an object in me, how big
-is its box, and what class is it. One look, all objects at once.
+YOLO makes one pass. The image becomes a grid, and every cell predicts at the same time: is an
+object centred in me, how big is it, which class is it.
 
-That change is what made realtime detection possible — dozens of frames per second on a machine
-you can put inside a robot. Accuracy per frame is somewhat lower than the slow methods, but a
-robot that answers in 20 milliseconds beats one that answers perfectly two seconds too late.
+- Dozens of frames per second on hardware that fits inside a robot
+- A little less accurate per frame
+- An answer in 20 milliseconds beats a perfect answer two seconds late
 
-> **Live demo — switch to Rerun.** `detect.py` runs YOLO on the RealSense feed: boxes around
-> everyone in the room, dozens of frames a second. Then `segment.py` — same idea, but pixel-exact
-> masks instead of boxes. Same "where?", two different answers.
+> **Live demo: switch to Rerun.** `detect.py` draws boxes around everyone in the room. Then
+> `segment.py`, same question, pixel-exact masks instead of boxes.
 
-## MediaPipe — from a box to a skeleton
+## MediaPipe, from a box to a skeleton
 
-A box is not enough to recognise a gesture. For that we need joints, and that is what
-**MediaPipe** provides. It is Google's toolkit of small models built to run on-device — phones,
-laptops, robots — rather than in a data centre.
+A box cannot tell you a gesture. Joints can. MediaPipe is Google's toolkit of small models built to
+run on the device rather than in a data centre.
 
-Its pose solution works in two stages, and the second stage is the interesting one:
+1. **Detect once**: a light detector finds the person and crops to them
+2. **Then track**: a second model predicts **33 landmarks**, each an x/y coordinate with a rough
+   depth and a confidence
 
-1. **Detect once.** A lightweight detector locates the person in the frame and crops to them.
-2. **Then track.** A second model runs on that crop and predicts **33 landmarks** — nose,
-   shoulders, elbows, wrists, hips, knees, ankles — each as an x/y coordinate plus a rough depth
-   and a confidence value.
+The next frame reuses the previous skeleton instead of detecting again. Detection is expensive,
+tracking is cheap. That is the trick that keeps it realtime.
 
-For the next frame it does not detect again. It reuses the previous skeleton to guess where the
-person moved and re-runs only the landmark model. Detection is expensive; tracking is cheap. That
-is the trick that keeps it realtime.
-
-The output is worth being precise about. MediaPipe returns **33 points with coordinates**. It does
-not return "standing", "pointing" or "waving". It has no concept of those things.
+MediaPipe returns 33 points with coordinates. It has no concept of "standing", "pointing" or
+"waving".
 
 ## So how do we detect a wave?
 
-We write it ourselves. That is the honest answer, and it is the point of this station.
+We write it ourselves. On top of the skeleton, a wave is geometry over time:
 
-Given the skeleton, "waving" becomes plain geometry over time:
+1. Wrist **above the shoulder**, which is two y-coordinates compared
+2. Elbow bent, so the arm is raised rather than pointing
+3. Wrist **moving side to side** across roughly a second
 
-1. Is the wrist **above the shoulder**? Compare two y-coordinates.
-2. Is the elbow bent, so the arm is raised rather than pointing?
-3. Does the wrist **move side to side** across roughly a second — left, right, left again?
+Three conditions true at once and we call it a wave. No network was trained on waving. A person
+decided what a wave looks like as numbers and typed it out.
 
-Three conditions, all true at once, and we call it a wave. No neural network was trained on waving.
-No model was asked "is this person waving". A person looked at what MediaPipe outputs, decided what
-a wave looks like as numbers, and typed it out.
-
-This is exactly the pattern from Station 1, one level down. The model supplies raw perception; a
-human supplies the meaning. In Station 4 this becomes a **skill** the robot can offer, and in
-Station 5 the agent gets to decide *when* to care about it — but nobody, at any point, taught an AI
-what waving is.
-
-> **Live demo — wave at the camera.** `pose.py` draws the skeleton and runs exactly the rule
-> above. Wave, and the status flips to `WAVE`. This is the same signal the robot's wave-back
-> reacts to.
+> **Live demo: wave at the camera.** `pose.py` draws the skeleton and runs exactly that rule. Wave,
+> and the status flips to `WAVE`. Same signal the robot's wave-back reacts to.
 
 ## Seeing in three dimensions
 
-The demos so far all drew on the flat colour image. But the depth camera turns every pixel into a
-point in space, and that is closer to how the robot actually perceives a room.
-
-> **Live demo — the point cloud.** `depth.py` rebuilds the room as a rotatable cloud of coloured
-> points. Then `fuse.py` puts the two together: YOLO finds a person on the colour image, the depth
-> camera says how far away they are, and a label floats in the 3D cloud at exactly their position.
-> Colour answers *what*, depth answers *where* — fused into one picture.
+> **Live demo: the point cloud.** `depth.py` rebuilds the room as a rotatable cloud of coloured
+> points. Then `fuse.py`: YOLO finds the person on the colour image, the depth camera says how far
+> away they are, and the label floats at that spot in 3D. Colour answers _what_, depth answers
+> _where_.
 
 ## Where it breaks
 
-Worth saying out loud during the demo, because it is the honest part:
+- Backlight and glass surfaces wreck depth measurements
+- A model only recognises what it was trained on, everything else is invisible rather than unknown
+- Landmarks jitter between frames, which is why the wave rule looks at a full second
+- Our rule is a guess about people: a slow wave with a straight arm never registers, and widening
+  the rule starts catching anyone scratching their head
 
-- Backlight and glass surfaces wreck depth measurements.
-- A model only recognises what it was trained on. Everything else is invisible to it, rather than
-  "unknown".
-- Landmarks jitter between frames. Every rule built on top has to tolerate that — which is why the
-  wave check looks at a full second instead of a single frame.
-- Our wave rule is a guess about human behaviour. Someone waving slowly, with a straight arm, or
-  holding a bag, will not register. Widening the rule to catch them starts catching people who are
-  just scratching their head.
+Station 4 turns this into a skill. Station 5 lets the agent decide when to care about it.
