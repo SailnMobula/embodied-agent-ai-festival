@@ -6,8 +6,8 @@ durationMinutes: 10
 takeaway: An LLM only talks. Memory, reasoning and skills are what turn it into something that acts.
 ---
 
-import AgentArchitecture from '@/components/AgentArchitecture.astro'
-import StateMachineDemo from '@/components/StateMachineDemo.tsx'
+import AgentArchitecture from "@/components/AgentArchitecture.astro";
+import StateMachineDemo from "@/components/StateMachineDemo.tsx";
 
 ## A brain in a sealed jar
 
@@ -28,12 +28,6 @@ So the question is not how to build a smarter brain. It is what we add to the ja
 - **Skills**: a door in the jar, a camera to look through, an arm to move
 - **Reasoning**: turning "find someone and wave" into steps
 
-An LLM with memory, reasoning and skills around it. That bundle is the agent, and **skill** is the
-word that carries through every station today.
-
-> **Live demo: switch to the terminal.** Ask a small local model for the weather in Kassel and
-> watch it invent an answer. The fix was never a better model, it was a door.
-
 ```bash
 ollama run qwen2.5:0.5b "what is the weather in Kassel right now?"
 ```
@@ -50,15 +44,6 @@ ollama run qwen2.5:0.5b "what is the weather in Kassel right now?"
 The pattern is identical. Only the consequences differ: a wrong file write is undone with one
 command, a wrong arm movement is not.
 
-## How robots are programmed today
-
-A **state machine**: a fixed set of situations, fixed rules for moving between them. Below is the
-"walk around and wave at people" task, written the traditional way.
+## State Machines - How robots are programmed today
 
 <StateMachineDemo client:visible />
-
-- No event for "the person waves first"
-- No event for "two people arrived at once"
-- Every case imagined by a developer, in advance, and typed out
-
-Station 5 wires up this exact task as an agent.

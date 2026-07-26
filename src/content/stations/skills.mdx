@@ -6,7 +6,7 @@ durationMinutes: 10
 takeaway: A skill is a name and a description. The model reads the description and never touches a motor.
 ---
 
-import SkillCatalogue from '@/components/SkillCatalogue.astro'
+import SkillCatalogue from "@/components/SkillCatalogue.astro";
 
 ## What the robot can be asked to do
 
@@ -41,6 +41,3 @@ The docstring is the whole interface. It is what the model reads when it decides
 
 Same name, same two parameters. The model picks the values and emits
 `{"name": "wave", "arguments": {"arm": "right", "times": 2}}`, and our software runs the function.
-
-> **Live demo: fire a skill without the model.** Test `wave` in the panel. Then stand too close and
-> watch the same call get refused.

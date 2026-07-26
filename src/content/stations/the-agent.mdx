@@ -6,8 +6,8 @@ durationMinutes: 20
 takeaway: The same task, without a single branch written in advance. That is the whole difference.
 ---
 
-import AgentPipeline from '@/components/AgentPipeline.astro'
-import StateMachineDemo from '@/components/StateMachineDemo.tsx'
+import AgentPipeline from "@/components/AgentPipeline.astro";
+import StateMachineDemo from "@/components/StateMachineDemo.tsx";
 
 ## What we plug together
 
@@ -21,18 +21,8 @@ import StateMachineDemo from '@/components/StateMachineDemo.tsx'
 
 Nowhere in there is a list of situations. The model decides.
 
-> **Live demo: build the agent on stage.** Write the prompt, tick three skills, activate, talk to
-> it.
+## Where are the limits
 
-## The same task, the old way
-
-<StateMachineDemo client:visible />
-
-Now ask for one more thing, like greeting people by name. On the agent side that is a sentence. On
-this side it is a redesign.
-
-## What still does not work
-
-- It calls skills in situations they were never built for
-- It cannot do anything no skill exposes
-- The same situation twice can end differently
+- Outcome is still stochastic
+- It cannot do anything no skill exposes or what was trained before
+- It can not learn or improve on the fly

@@ -2,11 +2,11 @@
 order: 2
 title: Cameras and perception
 tagline: Turning a grid of pixels into where a person is.
-takeaway: A model reports coordinates. What counts as a wave is a rule a human wrote on top.
+takeaway: There are different ways to understand the environment.
 durationMinutes: 10
 ---
 
-import PerceptionOutputs from '@/components/PerceptionOutputs.astro'
+import PerceptionOutputs from "@/components/PerceptionOutputs.astro";
 
 ## Three answers to one question
 
@@ -65,12 +65,3 @@ The skeleton gives coordinates, not meaning. Waving is a rule we wrote on top:
 
 - the wrist sits above the shoulder
 - it swings side to side across about a second
-
-Both true at once, and we call it a wave. No model was trained on waving. In Station 4 this rule
-becomes a skill, and in Station 5 the agent decides when to use it.
-
-## What it gets wrong
-
-- backlight and glass wreck the measurements
-- a model only sees what it was trained on, everything else is invisible to it
-- the skeleton jitters between frames, so the wave rule watches a full second, not one
